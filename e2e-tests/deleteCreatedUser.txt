@@ -1,0 +1,30 @@
+import { test, expect } from '@playwright/test';
+
+test('Executed first appointment', async ({page}) => {
+   
+   
+    await page.goto('https://admin.manduu.app/app/main/dashboard');
+      await expect(page.locator('#selectedClient')).toContainText('June Tester');
+    // await page.getByLabel('Client Phone Number').click();
+    await expect(page.getByLabel('Client Phone Number')).toHaveValue('0930230203');
+    await expect(page.getByLabel('Client Email')).toHaveValue('junetester2@gmail.com');
+    await page.getByRole('button', { name: 'Delete' }).click();
+    await page.getByRole('button', { name: 'Yes' }).click();
+
+    await page.getByRole('textbox', { name: 'Search Client' }).fill('manduu.test24@gmail.com');
+    await page.getByRole('button', { name: '' }).click();
+    // await expect(page.locator('#pn_id_103-table')).toContainText('test automate');
+    // await page.getByRole('cell', { name: 'manduu.test24@gmail.com' }).nth(1).click();
+    // await expect(page.locator('#pn_id_103-table')).toContainText('2335448749');
+
+    // await page.getByRole('link', { name: 'Delete' }).click();
+    // await page.getByRole('button', { name: 'Cancel' }).click();
+    // await page.getByRole('heading', { name: 'Clients' }).click();
+    await (page.getByRole('row', { name: 'Action  test automate manduu.test24@gmail.com 2335448749 Edmond Oklahoma' }).locator('#dropdownButton')).click();
+    // await expect(page.getByRole('row', { name: 'Action  test automate manduu.test24@gmail.com 2335448749 Edmond Oklahoma' }).locator('#dropdownButton')).toBeVisible();
+    await page.getByRole('link', { name: 'Delete' }).click();
+    await page.getByRole('button', { name: 'Yes' }).click();
+   
+  
+  
+  });

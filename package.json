@@ -1,0 +1,22 @@
+{
+  "name": "client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "allure-report": "npx allure generate ./allure-results --clean",
+    "allure-show": "npx allure open ./allure-report"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.44.1",
+    "@types/node": "^20.11.10",
+    "allure-commandline": "^2.27.0",
+    "allure-playwright": "^2.13.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  }
+}
