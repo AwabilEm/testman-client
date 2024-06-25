@@ -4,16 +4,16 @@ import { allure } from "allure-playwright";
 
 
 
-const email = 'manduu.test106@gmail.com';
+const email = 'manduu.test128@gmail.com';
 const password = 'TestUser@1'
-const PhoneNumber = '056-100-1111';
+const PhoneNumber = '056-128-1111';
 const fName = 'test';
 const lName ='automate'
 const tt ='me'
 const t ='me'
 
-const selectStu = 'Edmond Oklahoma';
-const SelectedDate ='09/17/2024'
+const selectStu = 'Houston';
+const SelectedDate ='07/18/2024'
 let selectedTime: string | null = null;
 //const CalendarSelectedDate = 17 September, 2024
 // Convert selected date to calendar format
@@ -73,26 +73,38 @@ test('Executed first appointment', async ({page}) => {
   await page.fill('[formcontrolname="selectedDate"]', CalendarSelectedDate);
 
  await page.getByRole('button', { name: 'Select studio ' }).click();
- await page.locator('.dropdown-item').getByText('Edmond Oklahoma').click();
+//  await page.locator('.dropdown-item').getByText(selectStu).click();
+await page.locator('.dropdown-item', { hasText: selectStu }).click();
 
 
 //  await page.locator('div.fc-event-custom-info:has-text("${selectedTime}")').locator(':has-text("${fname} ${lname}")').click();
 // //  await page.locator('div.fc-event-custom-info:has-text("07:30 AM - 09:00 AM")').locator(':has-text("${fname} ${lname}")').click();
 
-await page.locator(`div.fc-event-custom-info:has-text("${selectedTime}")`).locator(`:has-text("${fName} ${lName}")`).click();
+// await page.locator(`div.fc-event-custom-info:has-text("${selectedTime}")`).locator(`:has-text("${fName} ${lName}")`).click();
+await page.locator(`div.fc-event-custom-info:has-text("${selectedTime}")`)
+    .filter({ hasText: `${fName} ${lName}` })
+    .click();
 
 
 await page.locator('app-dropdown[placeholder="Type"] .p-dropdown-trigger').click();
 await page.locator('.p-dropdown-item:has-text("First Appointment")').click();
 
 // Click on the dropdown trigger associated with the placeholder "Status"Select the 'Executed' option from the opened dropdown menu
-await page.locator('app-dropdown[placeholder="Status"] .p-dropdown-trigger').click();
-await page.locator('.p-dropdown-item:has-text("Executed")').click();
+// await page.locator('app-dropdown[placeholder="Status"] .p-dropdown-trigger').click();
+// await page.locator('.p-dropdown-item:has-text("Executed")').click();
+// Click on the dropdown trigger associated with the placeholder "Status"
+// await page.locator('app-dropdown[placeholder="Status"] .p-dropdown-trigger').click();
+
+// Select the 'Executed' option from the opened dropdown menu
+await page.locator('app-dropdown[placeholder="Status"] .p-dropdown-item:has-text("Executed")').click();
+
 
 await page.locator('app-dropdown[placeholder="Personal coach / Trainer"] .p-dropdown-trigger').click();
-await page.locator('.p-dropdown-item:has-text("Trainer Test")'). click();
+// await page.locator('.p-dropdown-item:has-text("test manduu")'). click();
   // await page.locator('span[aria-label="Sparki Napier"]').click();
 
+  // await page.getByLabel('test manduu', { exact: true }).click();
+  await page.locator('.p-dropdown-item').filter({ hasText: /^test manduu$/ }).click();
 
 
 await page.locator('app-text-area').filter({ hasText: 'Client Memo *' }).getByRole('textbox').fill('This whole process has been automated, to make things faster and to avoid mistakes, this sessions will be deleted after the testing: So as part of the onboarding admin is supposed to executed a user first appointment');
@@ -154,7 +166,7 @@ async function selectStudio(page: any) {
  // Fill in the scheduled date.
 async function fillScheduledDate(page: any) {
    //await page.fill('#ScheduledDate', '05/07/2024');
-   await page.fill('xpath=//input[@id="ScheduledDate"]','09/17/2024')
+   await page.fill('xpath=//input[@id="ScheduledDate"]',SelectedDate)
   // await page.click('body');
   // await page.waitForTimeout(1000);
 await page.click('text="Start Time"');
@@ -361,7 +373,8 @@ async (page:any) => {
   
        async function signContract(page:any){
         await page.getByRole('button', { name: 'Sign Contract' }).click();
-    await page.locator('div').filter({ hasText: /^Fit 8 Plan \(Manduu Oklahoma\)$/ }).click();
+    // await page.locator('div').filter({ hasText: /^Fit 8 Plan \(Manduu Oklahoma\)$/ await page.getByRole('button', { name: 'Sign Contract' }).click();}).click();
+    await page.locator('div').filter({ hasText: /^Unlimi- Fit Plan Best Value \*H \(Manduu Houston\)$/ }).click();
     await page.getByRole('button', { name: 'Continue' }).click();
     await page.getByTitle('Sign Contract').locator('canvas').click({
       position: {
@@ -391,4 +404,17 @@ async (page:any) => {
        }
       
 
+       export async function findAndClickEvent(page: any) {
+        const specificEventLocator = page.locator(`div.fc-event-custom-info:has-text("${selectedTime}")`)
+                                     .locator(`span.fc-event-custom-message:has-text("${fName} ${lName}")`);
+      
+        const eventCount = await specificEventLocator.count();
+        console.log(`Found ${eventCount} elements matching the criteria`);
+      
+        if (eventCount === 1) {
+          await specificEventLocator.click();
+        } else {
+          console.error(`Expected one event but found ${eventCount}`);
+        }
+      }
       
