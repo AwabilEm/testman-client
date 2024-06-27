@@ -4,9 +4,9 @@ import { allure } from "allure-playwright";
 
 
 
-const email = 'manduu.test128@gmail.com';
+const email = 'manduu.test131@gmail.com';
 const password = 'TestUser@1'
-const PhoneNumber = '056-128-1111';
+const PhoneNumber = '056-131-1111';
 const fName = 'test';
 const lName ='automate'
 const tt ='me'
@@ -75,7 +75,9 @@ test('Executed first appointment', async ({page}) => {
  await page.getByRole('button', { name: 'Select studio ' }).click();
 //  await page.locator('.dropdown-item').getByText(selectStu).click();
 await page.locator('.dropdown-item', { hasText: selectStu }).click();
+await page.waitForTimeout(2000);
 
+await page.getByRole('button', { name: 'Refresh' }).click();
 
 //  await page.locator('div.fc-event-custom-info:has-text("${selectedTime}")').locator(':has-text("${fname} ${lname}")').click();
 // //  await page.locator('div.fc-event-custom-info:has-text("07:30 AM - 09:00 AM")').locator(':has-text("${fname} ${lname}")').click();
@@ -93,15 +95,19 @@ await page.locator('.p-dropdown-item:has-text("First Appointment")').click();
 // await page.locator('app-dropdown[placeholder="Status"] .p-dropdown-trigger').click();
 // await page.locator('.p-dropdown-item:has-text("Executed")').click();
 // Click on the dropdown trigger associated with the placeholder "Status"
-// await page.locator('app-dropdown[placeholder="Status"] .p-dropdown-trigger').click();
+await page.locator('app-dropdown[placeholder="Status"] .p-dropdown-trigger').click();
 
 // Select the 'Executed' option from the opened dropdown menu
-await page.locator('app-dropdown[placeholder="Status"] .p-dropdown-item:has-text("Executed")').click();
+// await page.locator('app-dropdown[placeholder="Status"] 
+//   .p-dropdown-item:has-text("Executed")').click();
+//   a
+  await page.getByLabel('Executed').click();
 
 
 await page.locator('app-dropdown[placeholder="Personal coach / Trainer"] .p-dropdown-trigger').click();
 // await page.locator('.p-dropdown-item:has-text("test manduu")'). click();
   // await page.locator('span[aria-label="Sparki Napier"]').click();
+  await page.waitForTimeout(1000);
 
   // await page.getByLabel('test manduu', { exact: true }).click();
   await page.locator('.p-dropdown-item').filter({ hasText: /^test manduu$/ }).click();
@@ -375,7 +381,7 @@ async (page:any) => {
         await page.getByRole('button', { name: 'Sign Contract' }).click();
     // await page.locator('div').filter({ hasText: /^Fit 8 Plan \(Manduu Oklahoma\)$/ await page.getByRole('button', { name: 'Sign Contract' }).click();}).click();
     await page.locator('div').filter({ hasText: /^Unlimi- Fit Plan Best Value \*H \(Manduu Houston\)$/ }).click();
-    await page.getByRole('button', { name: 'Continue' }).click();
+    // await page.getByRole('button', { name: 'Continue' }).click();
     await page.getByTitle('Sign Contract').locator('canvas').click({
       position: {
         x: 109,
@@ -417,4 +423,24 @@ async (page:any) => {
           console.error(`Expected one event but found ${eventCount}`);
         }
       }
-      
+      // await page.goto('https://admin.manduu.app/app/main/clients/all');
+      // await page.goto('https://admin.manduu.app/account/login');
+      // await page.getByPlaceholder('Email Address or Phone Number').click();
+      // await page.getByPlaceholder('Email Address or Phone Number').fill('postester24@gmail.com');
+      // await page.getByPlaceholder('Password').click();
+      // await page.getByPlaceholder('Password').fill('TestUser@1');
+      // await page.locator('form i').first().click();
+      // await page.getByPlaceholder('Password').click();
+      // await page.getByRole('button', { name: 'Login' }).click();
+      // await page.goto('https://admin.manduu.app/app/main/clients/all');
+      // await page.getByRole('link', { name: 'Session Calendar' }).click();
+      // await page.getByRole('button', { name: 'Refresh' }).click();
+      // await page.locator('#kt_app_main form i').click();
+      // await page.getByRole('button', { name: '›' }).click();
+      // await page.getByText('17', { exact: true }).click();
+      // await page.locator('a').filter({ hasText: ':30 am - 07:00 am Julie Cox' }).nth(2).click();
+      // await page.getByLabel('Personal Coaching').click();
+      // await page.getByLabel('First Appointment').click();
+      // await page.getByLabel('Pending').click();
+      // await page.getByLabel('Executed').click();
+      // await page.getByRole('button', { name: 'Close' }).click();
