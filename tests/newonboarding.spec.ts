@@ -4,15 +4,15 @@ import { allure } from "allure-playwright";
 
 
 
-const email = 'manduu.test106@gmail.com';
+const email = 'manduu.test124@gmail.com';
 const password = 'TestUser@1'
-const PhoneNumber = '056-100-1111';
+const PhoneNumber = '056-124-1111';
 const fName = 'test';
 const lName ='automate'
 const tt ='me'
 const t ='me'
 
-const selectStu = 'Edmond Oklahoma';
+const selectStu = 'Houston';
 const SelectedDate ='09/17/2024'
 let selectedTime: string | null = null;
 //const CalendarSelectedDate = 17 September, 2024
@@ -73,13 +73,31 @@ test('Executed first appointment', async ({page}) => {
   await page.fill('[formcontrolname="selectedDate"]', CalendarSelectedDate);
 
  await page.getByRole('button', { name: 'Select studio ' }).click();
- await page.locator('.dropdown-item').getByText('Edmond Oklahoma').click();
+//  await page.locator('.dropdown-item').getByText(selectStu).click();
+await page.locator('.dropdown-item', {hasText: selectStu}).click();
 
 
 //  await page.locator('div.fc-event-custom-info:has-text("${selectedTime}")').locator(':has-text("${fname} ${lname}")').click();
 // //  await page.locator('div.fc-event-custom-info:has-text("07:30 AM - 09:00 AM")').locator(':has-text("${fname} ${lname}")').click();
 
 await page.locator(`div.fc-event-custom-info:has-text("${selectedTime}")`).locator(`:has-text("${fName} ${lName}")`).click();
+
+
+// Locate the specific event by time and full name
+// const specificEventLocator = page.locator(`div.fc-event-custom-info:has-text("${selectedTime}")`)
+//                                .locator(`span.fc-event-custom-message:has-text("${fName} ${lName}")`);
+
+// // Check how many elements are matched
+// const eventCount = await specificEventLocator.count();
+// console.log(`Found ${eventCount} elements matching the criteria`);
+
+// if (eventCount === 1) {
+//   await specificEventLocator.click();
+// } else {
+//   console.error(`Expected one event but found ${eventCount}`);
+// }
+
+
 
 
 await page.locator('app-dropdown[placeholder="Type"] .p-dropdown-trigger').click();
@@ -90,7 +108,7 @@ await page.locator('app-dropdown[placeholder="Status"] .p-dropdown-trigger').cli
 await page.locator('.p-dropdown-item:has-text("Executed")').click();
 
 await page.locator('app-dropdown[placeholder="Personal coach / Trainer"] .p-dropdown-trigger').click();
-await page.locator('.p-dropdown-item:has-text("Trainer Test")'). click();
+await page.locator('.p-dropdown-item').filter({hasText: /^Test Manduu$/ }). click();
   // await page.locator('span[aria-label="Sparki Napier"]').click();
 
 
@@ -247,9 +265,7 @@ async function signMedicalConditions(page: any) {
 
 async function howYouHearAboutUs(page: any) {
   
-  // Select how the user heard about Manduu (e.g., Print Magazine, Radio, TV, etc.)
-  // await page.click('input[type="checkbox"][name="howDidYouHearAboutUs"][value="Print Magazine"]');
-  //await page.getByRole('button', { name: 'Complete question' }).first().click();
+  
   await page.getByRole('button', { name: 'Complete question' }).click()
   await page.locator('li').filter({ hasText: 'Print Magazine' }).getByRole('checkbox').check();
   await page.locator('li').filter({ hasText: 'Radio' }).getByRole('checkbox').check();

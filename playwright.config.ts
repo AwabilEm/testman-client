@@ -5,7 +5,7 @@ require('dotenv').config();
 
 export default defineConfig({
   testDir: './tests',
-  timeout: 500 * 1000,
+  timeout: 600 * 1000,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
@@ -24,9 +24,10 @@ export default defineConfig({
     // baseURL: 'http://127.0.0.1:3000',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-  trace: "on",
+  
   video: "on",
-  screenshot: "on",
+  screenshot: "only-on-failure",
+  trace: "on"
   },
 
 
