@@ -16,6 +16,10 @@ export default defineConfig({
     ['dot'],
     ['list'],
     // ['allure-playwright'],
+    [`monocart-reporter`, {
+      name: `My Test Report`,
+      outputFile: `./test-results/report.html`
+  }]
   ],
   
  

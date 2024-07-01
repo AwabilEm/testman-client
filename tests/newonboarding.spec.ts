@@ -6,7 +6,7 @@ import { allure } from "allure-playwright";
 
 const email = 'manduu.test143@gmail.com';
 const password = 'TestUser@1'
-const PhoneNumber = '056-142-1111';
+const PhoneNumber = '056-143-1111';
 const fName = 'test';
 const lName ='automate'
 const tt ='me'
