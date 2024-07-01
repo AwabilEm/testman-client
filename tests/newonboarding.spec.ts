@@ -2,9 +2,9 @@ import { test, expect } from '@playwright/test';
 import { allure } from "allure-playwright";
 //import { currentsReporter } from '@currents/playwright';
 
-const email = 'manduu.test161@gmail.com';
+const email = 'manduu.test164@gmail.com';
 const password = 'TestUser@1'
-const PhoneNumber = '056-161-1111';
+const PhoneNumber = '056-164-1111';
 const fName = 'test';
 const lName ='automate'
 const selectStu = 'Houston';
@@ -95,17 +95,22 @@ await page.waitForTimeout(2000);
 });
 
 test('LoginToCompleteOnboard', async ({ page }) => {   
-  await page.goto('https://newpwa.manduu.app/account/login');
-  await page.getByPlaceholder('Username Or Email *').fill(email);
-  await page.getByPlaceholder('Password *').fill(password);
-  await page.getByRole('button', { name: 'Log In' }).click();
+  await login(page);
   await addCard(page)
   await signContract(page)
-  await page.goto('https://newpwa.manduu.app/app/client/dashboard');
-  
      });
 
+  test('Login to ensure the onboarding is successfully', async ({ page }) => {   
+      await login(page);
+      await expect(page.locator('app-client-dashboard')).toContainText(`Welcome, ${test}`);
+      // await expect(page.locator('app-user-studio')).toContainText('Home Studio: Houston');
+      await expect(page.locator('app-user-studio')).toContainText(`Home Studio: ${selectStu}`);
+     await page.getByRole('img', { name: 'user' }).click();
+      await expect(page.locator('user-menu')).toContainText(`${email}`);
+      await expect(page.locator('user-menu')).toContainText(`${fName}`);
 
+
+});
   async function fillPersonalInformation(page: any) {
   await page.locator('man-input').filter({ hasText: 'First Name *' }).getByRole('textbox').fill(fName);
   await page.locator('man-input').filter({ hasText: 'Last Name *' }).getByRole('textbox').fill(lName);
@@ -371,4 +376,10 @@ async (page:any) => {
           console.error(`Expected one event but found ${eventCount}`);
         }
       }
-      
+      async function login(page:any){
+        await page.goto('https://newpwa.manduu.app/account/login');
+      await page.getByPlaceholder('Username Or Email *').fill(email);
+      await page.getByPlaceholder('Password *').fill(password);
+        await page.getByRole('button', { name: 'Log In' }).click();
+       
+       }
