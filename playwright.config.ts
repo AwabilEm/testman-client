@@ -3,6 +3,8 @@ import { defineConfig, devices } from '@playwright/test';
 
 require('dotenv').config();
 
+const date = new Date().toISOString().slice(0, 10); //2022-10-10
+const outputDir = `./test-results/${date}`;
 export default defineConfig({
   testDir: './tests',
   timeout: 500 * 1000,
@@ -17,7 +19,7 @@ export default defineConfig({
     ['list'],
     // ['allure-playwright'],
     [`monocart-reporter`, {
-      name: `My Test Report`,
+      name: `My Test Report ${date}`,
       outputFile: `./test-results/report.html`
   }]
   ],

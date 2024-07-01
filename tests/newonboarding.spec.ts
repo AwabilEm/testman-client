@@ -4,13 +4,12 @@ import { allure } from "allure-playwright";
 
 
 
-const email = 'manduu.test143@gmail.com';
+const email = 'manduu.test146@gmail.com';
 const password = 'TestUser@1'
-const PhoneNumber = '056-143-1111';
+const PhoneNumber = '056-146-1111';
 const fName = 'test';
 const lName ='automate'
-const tt ='me'
-const t ='me'
+
 
 const selectStu = 'Houston';
 const SelectedDate ='10/22/2024'
@@ -18,8 +17,8 @@ let selectedTime: string | null = null;
 //const CalendarSelectedDate = 17 September, 2024
 // Convert selected date to calendar format
 let CalendarSelectedDate = convertDate(SelectedDate);
-console.log(CalendarSelectedDate); // Output: "17 September, 2024"
-console.log(tt)
+console.log('Selected date',CalendarSelectedDate); // Output: "17 September, 2024"
+
 
 // Function to convert date format
 function convertDate(date: string): string {
@@ -79,10 +78,6 @@ await page.waitForTimeout(2000);
 
 await page.getByRole('button', { name: 'Refresh' }).click();
 
-//  await page.locator('div.fc-event-custom-info:has-text("${selectedTime}")').locator(':has-text("${fname} ${lname}")').click();
-// //  await page.locator('div.fc-event-custom-info:has-text("07:30 AM - 09:00 AM")').locator(':has-text("${fname} ${lname}")').click();
-
-// await page.locator(`div.fc-event-custom-info:has-text("${selectedTime}")`).locator(`:has-text("${fName} ${lName}")`).click();
 await page.locator(`div.fc-event-custom-info:has-text("${selectedTime}")`)
     .filter({ hasText: `${fName} ${lName}` })
     .click();
@@ -91,22 +86,12 @@ await page.locator(`div.fc-event-custom-info:has-text("${selectedTime}")`)
 await page.locator('app-dropdown[placeholder="Type"] .p-dropdown-trigger').click();
 await page.locator('.p-dropdown-item:has-text("First Appointment")').click();
 
-// Click on the dropdown trigger associated with the placeholder "Status"Select the 'Executed' option from the opened dropdown menu
-// await page.locator('app-dropdown[placeholder="Status"] .p-dropdown-trigger').click();
-// await page.locator('.p-dropdown-item:has-text("Executed")').click();
-// Click on the dropdown trigger associated with the placeholder "Status"
-await page.locator('app-dropdown[placeholder="Status"] .p-dropdown-trigger').click();
 
-// Select the 'Executed' option from the opened dropdown menu
-// await page.locator('app-dropdown[placeholder="Status"] 
-//   .p-dropdown-item:has-text("Executed")').click();
-//   a
-  await page.getByLabel('Executed').click();
+await page.locator('app-dropdown[placeholder="Status"] .p-dropdown-trigger').click();
+await page.getByLabel('Executed').click();
 
 
 await page.locator('app-dropdown[placeholder="Personal coach / Trainer"] .p-dropdown-trigger').click();
-// await page.locator('.p-dropdown-item:has-text("test manduu")'). click();
-  // await page.locator('span[aria-label="Sparki Napier"]').click();
   await page.waitForTimeout(1000);
 
   // await page.getByLabel('test manduu', { exact: true }).click();
@@ -117,9 +102,7 @@ await page.locator('app-text-area').filter({ hasText: 'Client Memo *' }).getByRo
 await page.getByRole('button', { name: 'Save' }).click();
 await page.waitForTimeout(2000);
 
-// await allure.attachment("basic-page-screen", await page.screenshot(), {
-//   contentType: "image/png",
-// });
+
 });
 
 test('LoginToCompleteOnboard', async ({ page }) => {
@@ -132,9 +115,6 @@ test('LoginToCompleteOnboard', async ({ page }) => {
   await addCard(page)
   await signContract(page)
  
-// await allure.attachment("basic-page-screen", await page.screenshot(), {
-//     contentType: "image/png",
-//   });
   await page.goto('https://newpwa.manduu.app/app/client/dashboard');
   
      });
@@ -206,18 +186,18 @@ async function selectRandomTime(page: any) {
 
   if (availableTimes) {
     // Log out all available times
-    console.log('Available times:', availableTimes);
+    console.log('Available times on',selectStu, ':', availableTimes);
 
     // Select a random index from the available times array
     const randomIndex = Math.floor(Math.random() * availableTimes.length);
     const selectedTimeWithIndex  = availableTimes[randomIndex];  // Declare a variable to store the selected time
     selectedTime = selectedTimeWithIndex.split(': ')[1];
-    console.log('Selected time:', selectedTime);
+    console.log('Selected time for the first appointment:', selectedTime);
 
     // Select the time option from the dropdown using the random index
     await page.selectOption('#inputGroupSelect02', availableTimes[randomIndex]);
   } else {
-    console.warn('No available times found after retries.');
+    console.warn('No available times found the selected date after retries.');
   }
 
   await page.getByRole('button', { name: 'Continue' }).click();
