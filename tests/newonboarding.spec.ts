@@ -2,17 +2,13 @@ import { test, expect } from '@playwright/test';
 import { allure } from "allure-playwright";
 //import { currentsReporter } from '@currents/playwright';
 
-
-
-const email = 'manduu.test146@gmail.com';
+const email = 'manduu.test161@gmail.com';
 const password = 'TestUser@1'
-const PhoneNumber = '056-146-1111';
+const PhoneNumber = '056-161-1111';
 const fName = 'test';
 const lName ='automate'
-
-
 const selectStu = 'Houston';
-const SelectedDate ='10/22/2024'
+const SelectedDate ='11/13/2024'
 let selectedTime: string | null = null;
 //const CalendarSelectedDate = 17 September, 2024
 // Convert selected date to calendar format
@@ -28,7 +24,7 @@ function convertDate(date: string): string {
   ];
 
   const [month, day, year] = date.split('/').map(part => parseInt(part, 10));
-  return `${day} ${months[month - 1]}, ${year}`;
+  return `${months[month - 1]} ${day}, ${year}`;
 }
 
 
@@ -44,8 +40,6 @@ test('Onboarding', async ({ page }) => {
 
  // Fill in the scheduled date
  await fillScheduledDate(page);
- 
-
  // Wait for time options and select a random time
  await selectRandomTime(page);
  await page.screenshot({ path: 'screenshot.png', fullPage: true });
@@ -61,22 +55,24 @@ test('Onboarding', async ({ page }) => {
  await FirstAppointment(page);
 
 });
-
+20
 
 
 test('Executed first appointment', async ({page}) => {
    
   await page.goto('https://admin.manduu.app/app/main/dashboard');
-  await page.getByRole('link', { name: 'Session Calendar' }).click();
-  
-  await page.fill('[formcontrolname="selectedDate"]', CalendarSelectedDate);
+  // await page.goto('https://admin.manduu.app/app/main/clients/client-session');
+ 
+await page.getByRole('link', { name: 'Session Calendar' }).click();
+await page.fill('[formcontrolname="selectedDate"]', CalendarSelectedDate);
 
- await page.getByRole('button', { name: 'Select studio ' }).click();
-//  await page.locator('.dropdown-item').getByText(selectStu).click();
+ 
+await page.getByRole('button', { name: 'Select studio ' }).click();
 await page.locator('.dropdown-item', { hasText: selectStu }).click();
-await page.waitForTimeout(2000);
+// await page.waitForTimeout(1000);
 
 await page.getByRole('button', { name: 'Refresh' }).click();
+await page.waitForTimeout(1000);
 
 await page.locator(`div.fc-event-custom-info:has-text("${selectedTime}")`)
     .filter({ hasText: `${fName} ${lName}` })
@@ -85,19 +81,12 @@ await page.locator(`div.fc-event-custom-info:has-text("${selectedTime}")`)
 
 await page.locator('app-dropdown[placeholder="Type"] .p-dropdown-trigger').click();
 await page.locator('.p-dropdown-item:has-text("First Appointment")').click();
-
-
 await page.locator('app-dropdown[placeholder="Status"] .p-dropdown-trigger').click();
 await page.getByLabel('Executed').click();
-
-
 await page.locator('app-dropdown[placeholder="Personal coach / Trainer"] .p-dropdown-trigger').click();
-  await page.waitForTimeout(1000);
-
+await page.waitForTimeout(1000);
   // await page.getByLabel('test manduu', { exact: true }).click();
-  await page.locator('.p-dropdown-item').filter({ hasText: /^test manduu$/ }).click();
-
-
+await page.locator('.p-dropdown-item').filter({ hasText: /^Test Manduu$/ }).click();
 await page.locator('app-text-area').filter({ hasText: 'Client Memo *' }).getByRole('textbox').fill('This whole process has been automated, to make things faster and to avoid mistakes, this sessions will be deleted after the testing: So as part of the onboarding admin is supposed to executed a user first appointment');
 await page.getByRole('button', { name: 'Save' }).click();
 await page.waitForTimeout(2000);
@@ -105,22 +94,17 @@ await page.waitForTimeout(2000);
 
 });
 
-test('LoginToCompleteOnboard', async ({ page }) => {
-    
+test('LoginToCompleteOnboard', async ({ page }) => {   
   await page.goto('https://newpwa.manduu.app/account/login');
   await page.getByPlaceholder('Username Or Email *').fill(email);
   await page.getByPlaceholder('Password *').fill(password);
   await page.getByRole('button', { name: 'Log In' }).click();
- 
   await addCard(page)
   await signContract(page)
- 
   await page.goto('https://newpwa.manduu.app/app/client/dashboard');
   
      });
 
-
-     
 
   async function fillPersonalInformation(page: any) {
   await page.locator('man-input').filter({ hasText: 'First Name *' }).getByRole('textbox').fill(fName);
@@ -141,7 +125,6 @@ test('LoginToCompleteOnboard', async ({ page }) => {
 
   }
 
-
    //Select the studio.
 async function selectStudio(page: any) {
 
@@ -153,9 +136,7 @@ async function selectStudio(page: any) {
 async function fillScheduledDate(page: any) {
    //await page.fill('#ScheduledDate', '05/07/2024');
    await page.fill('xpath=//input[@id="ScheduledDate"]',SelectedDate)
-  // await page.click('body');
-  // await page.waitForTimeout(1000);
-await page.click('text="Start Time"');
+   await page.click('text="Start Time"');
 
 
 }
@@ -245,10 +226,6 @@ async function signMedicalConditions(page: any) {
 }
 
 async function howYouHearAboutUs(page: any) {
-  
-  // Select how the user heard about Manduu (e.g., Print Magazine, Radio, TV, etc.)
-  // await page.click('input[type="checkbox"][name="howDidYouHearAboutUs"][value="Print Magazine"]');
-  //await page.getByRole('button', { name: 'Complete question' }).first().click();
   await page.getByRole('button', { name: 'Complete question' }).click()
   await page.locator('li').filter({ hasText: 'Print Magazine' }).getByRole('checkbox').check();
   await page.locator('li').filter({ hasText: 'Radio' }).getByRole('checkbox').check();
@@ -264,7 +241,6 @@ async function howYouHearAboutUs(page: any) {
   await page.locator('li').filter({ hasText: 'Referral' }).getByRole('checkbox').check();
   await page.getByRole('list').locator('li').filter({ hasText: 'Other' }).getByRole('checkbox').check();
 
-  // Fill in additional information
   // await page.getByRole('textbox').fill('through a movie');
  await page. getByTitle('How did you hear about us?').getByRole('textbox').fill('through a movie');
 
@@ -290,9 +266,6 @@ await page.locator('man-input').filter({ hasText: 'Street *' }).getByRole('textb
 await page.getByRole('button', { name: 'Save' }).click();
 
 
-
-
-//test
 
 }
 async function  CompleteClientInfo(page: any){
@@ -346,19 +319,15 @@ async (page:any) => {
   
   async function addCard(page:any) {
     await page.getByRole('button', { name: 'Add Card' }).click();
-    
     await page.getByTitle('Add Your Card').locator('input[type="text"]').fill('TESTER CARD');
-    
     await page.locator('#cc-number').first().fill('4916186141125817');
-    
     await page.locator('#cc-exp-date').fill('06 / 2026');
-    
     await page.locator('#cc-number').nth(1).fill('546');
     await page.getByRole('button', { name: 'Authorize' }).click();
   
   }
   
-       async function signContract(page:any){
+      async function signContract(page:any){
         await page.getByRole('button', { name: 'Sign Contract' }).click();
     // await page.locator('div').filter({ hasText: /^Fit 8 Plan \(Manduu Oklahoma\)$/ await page.getByRole('button', { name: 'Sign Contract' }).click();}).click();
     await page.locator('div').filter({ hasText: /^Unlimi- Fit Plan Best Value \*H \(Manduu Houston\)$/ }).click();
@@ -385,9 +354,7 @@ async (page:any) => {
     await page.getByRole('button', { name: ' Sign' }).click();
     await page.getByRole('button', { name: 'Complete Onboarding' }).click();
     //await page.goto('https://newpwa.manduu.app/app/client/dashboard');
-  
-  
-  
+
        }
       
 
@@ -404,24 +371,4 @@ async (page:any) => {
           console.error(`Expected one event but found ${eventCount}`);
         }
       }
-      // await page.goto('https://admin.manduu.app/app/main/clients/all');
-      // await page.goto('https://admin.manduu.app/account/login');
-      // await page.getByPlaceholder('Email Address or Phone Number').click();
-      // await page.getByPlaceholder('Email Address or Phone Number').fill('postester24@gmail.com');
-      // await page.getByPlaceholder('Password').click();
-      // await page.getByPlaceholder('Password').fill('TestUser@1');
-      // await page.locator('form i').first().click();
-      // await page.getByPlaceholder('Password').click();
-      // await page.getByRole('button', { name: 'Login' }).click();
-      // await page.goto('https://admin.manduu.app/app/main/clients/all');
-      // await page.getByRole('link', { name: 'Session Calendar' }).click();
-      // await page.getByRole('button', { name: 'Refresh' }).click();
-      // await page.locator('#kt_app_main form i').click();
-      // await page.getByRole('button', { name: '›' }).click();
-      // await page.getByText('17', { exact: true }).click();
-      // await page.locator('a').filter({ hasText: ':30 am - 07:00 am Julie Cox' }).nth(2).click();
-      // await page.getByLabel('Personal Coaching').click();
-      // await page.getByLabel('First Appointment').click();
-      // await page.getByLabel('Pending').click();
-      // await page.getByLabel('Executed').click();
-      // await page.getByRole('button', { name: 'Close' }).click();
+      
