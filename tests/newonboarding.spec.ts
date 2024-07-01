@@ -4,16 +4,16 @@ import { allure } from "allure-playwright";
 
 
 
-const email = 'manduu.test131@gmail.com';
+const email = 'manduu.test143@gmail.com';
 const password = 'TestUser@1'
-const PhoneNumber = '056-131-1111';
+const PhoneNumber = '056-142-1111';
 const fName = 'test';
 const lName ='automate'
 const tt ='me'
 const t ='me'
 
 const selectStu = 'Houston';
-const SelectedDate ='07/18/2024'
+const SelectedDate ='10/22/2024'
 let selectedTime: string | null = null;
 //const CalendarSelectedDate = 17 September, 2024
 // Convert selected date to calendar format
@@ -226,6 +226,7 @@ async function selectRandomTime(page: any) {
 
 
 }
+
 //Handle popups, if any.
 async function handlePopups(page: any) {
   try {
