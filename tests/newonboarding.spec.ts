@@ -2,9 +2,11 @@ import { test, expect } from '@playwright/test';
 import { allure } from "allure-playwright";
 //import { currentsReporter } from '@currents/playwright';
 
-const email = 'manduu.test166@gmail.com';
+const email = 'manduu.test168@gmail.com';
+const PhoneNumber = '056-168-1111';
+
+
 const password = 'TestUser@1'
-const PhoneNumber = '056-166-1111';
 const fName = 'test';
 const lName ='automate'
 const selectStu = 'Houston';
