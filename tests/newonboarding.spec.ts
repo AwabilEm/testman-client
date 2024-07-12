@@ -1,10 +1,8 @@
 import { test, expect } from '@playwright/test';
 import { allure } from "allure-playwright";
 //import { currentsReporter } from '@currents/playwright';
-
-const email = 'manduu.test170@gmail.com';
-const PhoneNumber = '056-170-1111';
-
+const email = 'manduu.test172@gmail.com';
+const PhoneNumber = '056-172-1111';
 
 const password = 'TestUser@1'
 const fName = 'test';
