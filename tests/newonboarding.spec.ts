@@ -2,13 +2,14 @@ import { test, expect } from '@playwright/test';
 import { allure } from "allure-playwright";
 //import { currentsReporter } from '@currents/playwright';
 
-const email = 'manduu.test166@gmail.com';
+const email = 'manduu.test175@gmail.com';
 const password = 'TestUser@1'
-const PhoneNumber = '056-166-1111';
+const PhoneNumber = '056-175-1111';
 const fName = 'test';
 const lName ='automate'
 const selectStu = 'Houston';
-const SelectedDate ='11/12/2024'
+// to kenn const SelectedDate ='11/12/2024'
+const SelectedDate ='11/13/2024'
 let selectedTime: string | null = null;
 //const CalendarSelectedDate = 17 September, 2024
 // Convert selected date to calendar format
@@ -100,21 +101,19 @@ test('LoginToCompleteOnboard', async ({ page }) => {
   await signContract(page)
      });
 
-  // test('Login to ensure the onboarding is successfully', async ({ page }) => {   
-  //           await login(page);
-  //           // await expect(page.locator('user-menu')).toContainText(`${fName}`);
+  test('Login to ensure the onboarding is successfully', async ({ page }) => {   
+  await login(page);
+//
+  await expect(page.locator('h3.font-bold')).toContainText(`Welcome, ${fName}`);
 
-  //           await expect(page.locator('heading')).toContainText(`Welcome, ${fName}`);
-
-      
-  //     // await expect(page.locator('app-user-studio')).toContainText('Home Studio: Houston');
-  //     await expect(page.locator('app-user-studio')).toContainText(`Home Studio: ${selectStu}`);
-  //    await page.getByRole('img', { name: 'user' }).click();
-  //     await expect(page.locator('user-menu')).toContainText(`${email}`);
-  //     await expect(page.locator('user-menu')).toContainText(`${fName}`);
+      // await expect(page.locator('app-user-studio')).toContainText('Home Studio: Houston');
+      await expect(page.locator('app-user-studio')).toContainText(`Home Studio: ${selectStu}`);
+     await page.getByRole('img', { name: 'user' }).click();
+      await expect(page.locator('user-menu')).toContainText(`${email}`);
+      await expect(page.locator('user-menu')).toContainText(`${fName}`);
 
 
-// });
+});
   async function fillPersonalInformation(page: any) {
   await page.locator('man-input').filter({ hasText: 'First Name *' }).getByRole('textbox').fill(fName);
   await page.locator('man-input').filter({ hasText: 'Last Name *' }).getByRole('textbox').fill(lName);
