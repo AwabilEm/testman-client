@@ -1,13 +1,13 @@
 import { test, expect } from '@playwright/test';
 //import { currentsReporter } from '@currents/playwright';
-const email = 'manduu.test803@gmail.com';
-const PhoneNumber = '800-000-0003';
+const email = 'manduu.test8010@gmail.com';
+const PhoneNumber = '800-000-0010';
 
 const password = 'TestUser@1'
 const fName = 'test';
 const lName ='automate'
 const selectStu = 'Houston';
-const SelectedDate ='11/12/2024'
+const SelectedDate ='11/13/2024'
 let selectedTime: string | null = null;
 //const CalendarSelectedDate = 17 September, 2024
 // Convert selected date to calendar format
@@ -68,12 +68,11 @@ await page.fill('[formcontrolname="selectedDate"]', CalendarSelectedDate);
  
 await page.getByRole('button', { name: 'Select studio ' }).click();
 await page.locator('.dropdown-item', { hasText: selectStu }).click();
-// await page.waitForTimeout(1000);
+ await page.waitForTimeout(4000);
 
 await page.getByRole('button', { name: 'Refresh' }).click();
-await page.waitForTimeout(1000);
-
-await page.locator(`div.fc-event-custom-info:has-text("${selectedTime}")`)
+await page.locator(`div.fc-event-custom-info:has-text("${selectedTime}")`) 
+//await page.locator(`div.fc-event-custom-info:has-text("07:30 AM")`)
     .filter({ hasText: `${fName} ${lName}` })
     .click();
 
@@ -82,6 +81,9 @@ await page.locator('app-dropdown[placeholder="Type"] .p-dropdown-trigger').click
 await page.locator('.p-dropdown-item:has-text("First Appointment")').click();
 await page.locator('app-dropdown[placeholder="Status"] .p-dropdown-trigger').click();
 await page.getByLabel('Executed').click();
+//await page.getByRole('option', { name: 'Executed' }).click
+await page.waitForTimeout(1000);
+
 await page.locator('app-dropdown[placeholder="Personal coach / Trainer"] .p-dropdown-trigger').click();
 await page.waitForTimeout(1000);
   // await page.getByLabel('test manduu', { exact: true }).click();
