@@ -1,18 +1,15 @@
-import { test, expect } from '@playwright/test';
-//import { currentsReporter } from '@currents/playwright';
 
-const email = 'test.awabil3@gmail.com';
-const PhoneNumber = '810-000-0000';
+       import { test, expect } from '@playwright/test';
+//import { currentsReporter } from '@currents/playwright';
+const email = 'manduu.test8012@gmail.com';
+const PhoneNumber = '800-000-0012';
 
 const password = 'TestUser@1'
 const fName = 'test';
 const lName ='automate'
 const selectStu = 'Houston';
-const SelectedDate ='11/19/2024'
+const SelectedDate ='11/13/2024'
 let selectedTime: string | null = null;
-
-
-
 //const CalendarSelectedDate = 17 September, 2024
 // Convert selected date to calendar format
 let CalendarSelectedDate = convertDate(SelectedDate);
@@ -61,66 +58,43 @@ test('Onboarding', async ({ page }) => {
 20
 
 
-test('Executed first appointment', async ({ page }) => {
-    // Navigate to the dashboard
-    await page.goto('https://admin.manduu.app/app/main/dashboard');
-    console.log('Navigated to the dashboard.');
-  
-    // Click on the Session Calendar link
-    await page.getByRole('link', { name: 'Session Calendar' }).click();
-    console.log('Clicked on the Session Calendar link.');
-  
-    // Fill in the selected date
-    await page.fill('[formcontrolname="selectedDate"]', CalendarSelectedDate);
-    console.log(`Filled selected date: ${CalendarSelectedDate}`);
-  
-    // Select the studio
-    await page.getByRole('button', { name: 'Select studio ' }).click();
-    await page.locator('.dropdown-item', { hasText: selectStu }).click();
-    console.log(`Selected studio: ${selectStu}`);
-  
-    // Wait for the page to refresh
-    await page.waitForTimeout(4000);
-    await page.getByRole('button', { name: 'Refresh' }).click();
-    console.log('Clicked Refresh button.');
-  
-    // Attempt to click on the event based on selected time and client
-    try {
-      await page.locator(`div.fc-event-custom-info:has-text("${selectedTime}")`)
-        .filter({ hasText: `${fName} ${lName}` })
-        .click();
-      console.log(`Clicked on the event with time ${selectedTime} and client ${fName} ${lName}.`);
-    } catch (error) {
-      console.error('Event not found or not clickable. Please check if the time and client details are correct.');
-      console.error(`Selected time: ${selectedTime}`);
-      console.error(`Client details: ${fName} ${lName}`);
-    }
-  
-    // Set the appointment type to "First Appointment"
-    await page.locator('app-dropdown[placeholder="Type"] .p-dropdown-trigger').click();
-    await page.locator('.p-dropdown-item:has-text("First Appointment")').click();
-    console.log('Selected "First Appointment" from the Type dropdown.');
-  
-    // Set the appointment status to "Executed"
-    await page.locator('app-dropdown[placeholder="Status"] .p-dropdown-trigger').click();
-    await page.getByLabel('Executed').click();
-    console.log('Selected "Executed" from the Status dropdown.');
-    await page.waitForTimeout(1000);
-  
-    // Select the personal coach / trainer
-    await page.locator('app-dropdown[placeholder="Personal coach / Trainer"] .p-dropdown-trigger').click();
-    await page.waitForTimeout(1000);
-    await page.locator('.p-dropdown-item').filter({ hasText: /^Test Manduu$/ }).click();
-    console.log('Selected "Test Manduu" from the Personal coach / Trainer dropdown.');
-  
-    // Fill in the memo and save the appointment
-    await page.locator('app-text-area').filter({ hasText: 'Client Memo *' }).getByRole('textbox').fill('This whole process has been automated, to make things faster and to avoid mistakes, this session will be deleted after the testing: So as part of the onboarding admin is supposed to execute a user first appointment');
-    await page.getByRole('button', { name: 'Save' }).click();
-    console.log('Filled in the memo and clicked Save.');
-    await page.waitForTimeout(2000);
-  });
-  
-  
+test('Executed first appointment', async ({page}) => {
+   
+  await page.goto('https://admin.manduu.app/app/main/dashboard');
+  // await page.goto('https://admin.manduu.app/app/main/clients/client-session');
+ 
+await page.getByRole('link', { name: 'Session Calendar' }).click();
+await page.fill('[formcontrolname="selectedDate"]', CalendarSelectedDate);
+
+ 
+await page.getByRole('button', { name: 'Select studio ' }).click();
+await page.locator('.dropdown-item', { hasText: selectStu }).click();
+ await page.waitForTimeout(4000);
+
+await page.getByRole('button', { name: 'Refresh' }).click();
+await page.locator(`div.fc-event-custom-info:has-text("${selectedTime}")`) 
+//await page.locator(`div.fc-event-custom-info:has-text("07:30 AM")`)
+    .filter({ hasText: `${fName} ${lName}` })
+    .click();
+
+
+await page.locator('app-dropdown[placeholder="Type"] .p-dropdown-trigger').click();
+await page.locator('.p-dropdown-item:has-text("First Appointment")').click();
+await page.locator('app-dropdown[placeholder="Status"] .p-dropdown-trigger').click();
+await page.getByLabel('Executed').click();
+//await page.getByRole('option', { name: 'Executed' }).click
+await page.waitForTimeout(1000);
+
+await page.locator('app-dropdown[placeholder="Personal coach / Trainer"] .p-dropdown-trigger').click();
+await page.waitForTimeout(1000);
+  // await page.getByLabel('test manduu', { exact: true }).click();
+await page.locator('.p-dropdown-item').filter({ hasText: /^Test Manduu$/ }).click();
+await page.locator('app-text-area').filter({ hasText: 'Client Memo *' }).getByRole('textbox').fill('This whole process has been automated, to make things faster and to avoid mistakes, this sessions will be deleted after the testing: So as part of the onboarding admin is supposed to executed a user first appointment');
+await page.getByRole('button', { name: 'Save' }).click();
+await page.waitForTimeout(2000);
+
+
+});
 
 test('LoginToCompleteOnboard', async ({ page }) => {   
   await login(page);
@@ -163,52 +137,53 @@ async function fillScheduledDate(page: any) {
 
 
 }
-
-
+ // Select a random time from available options.
 async function selectRandomTime(page: any) {
+  // Define a function to check if the time dropdown is available and return all available options
   const getTimeOptions = async () => {
     const timeDropdown = await page.$('#inputGroupSelect02');
-    if (!timeDropdown) return null;
-
-    const options = await timeDropdown.$$eval('option', options =>
-      options
-        .map(option => option.getAttribute('value'))
-        .filter(option => option && !option.includes('undefined'))
-    );
-
-    return options.length > 0 ? options : null;
+    if (!timeDropdown) return null; // Return null if dropdown is not found
+    const options = await timeDropdown.$$eval('option', options => options.map(option => option.getAttribute('value')));
+    return options.length > 0 ? options : null; // Return null if no options found
   };
 
+  // Define a function to wait for the dropdown options to become available with retries
   const waitForTimeOptions = async () => {
     let attempts = 0;
-    while (attempts < 5) {
+    while (attempts < 5) { // Retry for a maximum of 5 attempts
       const availableTimes = await getTimeOptions();
-      if (availableTimes) return availableTimes;
-      await page.waitForTimeout(1000);
+      if (availableTimes) return availableTimes; // Return options if available
+      await page.waitForTimeout(1000); // Wait for 1 second before retrying
       attempts++;
     }
-    return null;
+    return null; // Return null if options are not available after retries
   };
 
+  // Wait for the time dropdown options to become available
   const availableTimes = await waitForTimeOptions();
 
   if (availableTimes) {
-    console.log('Available times:', availableTimes);
+    // Log out all available times
+    console.log('Available times on',selectStu, ':', availableTimes);
 
+    // Select a random index from the available times array
     const randomIndex = Math.floor(Math.random() * availableTimes.length);
-    selectedTime = availableTimes[randomIndex].split(': ')[1];
-    console.log('Selected time for the appointment:', selectedTime);
+    const selectedTimeWithIndex  = availableTimes[randomIndex];  // Declare a variable to store the selected time
+    selectedTime = selectedTimeWithIndex.split(': ')[1];
+    console.log('Selected time for the first appointment:', selectedTime);
 
+    // Select the time option from the dropdown using the random index
     await page.selectOption('#inputGroupSelect02', availableTimes[randomIndex]);
   } else {
-    console.warn('No available times found for the selected date after retries.');
+    console.warn('No available times found the selected date after retries.');
   }
 
-  await page.waitForTimeout(2000);
   await page.getByRole('button', { name: 'Continue' }).click();
-  await page.getByRole('button', { name: 'Next' }).click();
-}
+   // Click the OK button to continue
+   await page.getByRole('button', { name: 'Next' }).click();
 
+
+}
 
 //Handle popups, if any.
 async function handlePopups(page: any) {
@@ -349,13 +324,10 @@ async (page:any) => {
   
   }
   
-  async function signContract(page:any){
+      async function signContract(page:any){
         await page.getByRole('button', { name: 'Sign Contract' }).click();
     // await page.locator('div').filter({ hasText: /^Fit 8 Plan \(Manduu Oklahoma\)$/ await page.getByRole('button', { name: 'Sign Contract' }).click();}).click();
-    //await page.locator('div').filter({ hasText: /^Unlimi- Fit Plan Best Value \*H \(Manduu Houston\)$/ }).click();
-    await page.locator('div').filter({ hasText: /^Test Kenn Konlan$/ }).first().click()
-   
-    //locator('div').filter({ hasText: /^Test Kenn Konlan$/ }).nth(1)
+    await page.locator('div').filter({ hasText: /^Unlimi- Fit Plan Best Value \*H \(Manduu Houston\)$/ }).click();
     // await page.getByRole('button', { name: 'Continue' }).click();
     await page.getByTitle('Sign Contract').locator('canvas').click({
       position: {
@@ -403,4 +375,3 @@ async (page:any) => {
         await page.getByRole('button', { name: 'Log In' }).click();
        
        }
-
