@@ -1,41 +1,28 @@
 import { test, expect } from '@playwright/test';
 //import { currentsReporter } from '@currents/playwright';
 import { convertDate } from '../util/dateUtils.ts'
-import { deleteStaffMember } from '../util/deletenew.ts'
+import { expectedStudios } from '../util/studios.ts';
 
 
-const email = 'awabil.test1@gmail.com';
-const PhoneNumber = '8000000001';
-const password = 'TestUser@1';
+const email = 'test.awabil4@gmail.com';
+const PhoneNumber = '810-000-0001';
+
+const password = 'TestUser@1'
 const fName = 'test';
-const lName ='automate';
-//const selectStu = 'Houston';
-const selectStu = 'Downtown Franklin';
-const SelectedDate ='01/20/2025';
+const lName ='automate'
+const selectStu = 'Houston';
+const SelectedDate ='12/20/2024'
 let selectedTime: string | null = null;
-const expectedWarningText = 'will be deleted';
 
+// Ensure SelectedDate is defined
 
+// Now you can use SelectedDate
 let CalendarSelectedDate = convertDate(SelectedDate);
 console.log('Selected date', CalendarSelectedDate); // Output: "September 17, 2024"
 
 
-//const CalendarSelectedDate = 17 September, 2024
-// Convert selected date to calendar format
-// let CalendarSelectedDate = convertDate(SelectedDate);
-// console.log('Selected date',CalendarSelectedDate); // Output: "17 September, 2024"
 
 
-// Function to convert date format
-// function convertDate(date: string): string {
-//   const months = [
-//     "January", "February", "March", "April", "May", "June", 
-//     "July", "August", "September", "October", "November", "December"
-//   ];
-
-//   const [month, day, year] = date.split('/').map(part => parseInt(part, 10));
-//   return `${months[month - 1]} ${day}, ${year}`;
-// }
 
 
 
@@ -65,7 +52,7 @@ test('Onboarding', async ({ page }) => {
  await FirstAppointment(page);
 
 });
-
+20
 
 
 test('Executed first appointment', async ({ page }) => {
@@ -102,6 +89,7 @@ test('Executed first appointment', async ({ page }) => {
       console.error(`Selected time: ${selectedTime}`);
       console.error(`Client details: ${fName} ${lName}`);
     }
+  
     // Set the appointment type to "First Appointment"
     await page.locator('app-dropdown[placeholder="Type"] .p-dropdown-trigger').click();
     await page.locator('.p-dropdown-item:has-text("First Appointment")').click();
@@ -116,8 +104,7 @@ test('Executed first appointment', async ({ page }) => {
     // Select the personal coach / trainer
     await page.locator('app-dropdown[placeholder="Personal coach / Trainer"] .p-dropdown-trigger').click();
     await page.waitForTimeout(1000);
-    await page.locator('.p-dropdown-item').filter({ hasText: /^POSTestStaff POS$/ }).click();
-    // await page.locator('.p-dropdown-item').filter({ hasText: /^Test Manduu$/ }).click();
+    await page.locator('.p-dropdown-item').filter({ hasText: /^Test Manduu$/ }).click();
     console.log('Selected "Test Manduu" from the Personal coach / Trainer dropdown.');
   
     // Fill in the memo and save the appointment
@@ -360,41 +347,30 @@ async (page:any) => {
         await page.getByRole('button', { name: 'Sign Contract' }).click();
     // await page.locator('div').filter({ hasText: /^Fit 8 Plan \(Manduu Oklahoma\)$/ await page.getByRole('button', { name: 'Sign Contract' }).click();}).click();
     //await page.locator('div').filter({ hasText: /^Unlimi- Fit Plan Best Value \*H \(Manduu Houston\)$/ }).click();
-    //await page.locator('div').filter({ hasText: /^Test Kenn Konlan$/ }).first().click()
-
-
-    //New added
-    await page.locator('div').filter({ hasText: /^Flex 10 \*\$449\*$/ }).getByRole('radio').check();
-   await page.getByTitle('Sign Contract').locator('canvas').click({
-     position: {
-       x: 107,
-       y: 49
-     }
-   });
-   await page.getByRole('button', { name: '     Sign' }).click();
-
+    await page.locator('div').filter({ hasText: /^Test Kenn Konlan$/ }).first().click()
+   
     //locator('div').filter({ hasText: /^Test Kenn Konlan$/ }).nth(1)
     // await page.getByRole('button', { name: 'Continue' }).click();
-    // await page.getByTitle('Sign Contract').locator('canvas').click({
-    //   position: {
-    //     x: 109,
-    //     y: 56
-    //   }
-    // });
-    // await page.getByTitle('Sign Contract').locator('canvas').click({
-    //   position: {
-    //     x: 152,
-    //     y: 54
-    //   }
-    // });
+    await page.getByTitle('Sign Contract').locator('canvas').click({
+      position: {
+        x: 109,
+        y: 56
+      }
+    });
+    await page.getByTitle('Sign Contract').locator('canvas').click({
+      position: {
+        x: 152,
+        y: 54
+      }
+    });
     
   
-    //await page.getByRole('button', { name: 'Sign Here' }).first().click();
-    // await page.getByRole('button', { name: 'Sign Here' }).nth(1).click();
-    // await page.getByRole('button', { name: 'Sign Here' }).nth(2).click();
-    // await page.getByRole('button', { name: 'Sign Here' }).nth(3).click();
-    // await page.getByRole('button', { name: 'Sign Here' }).nth(4).click();
-    //await page.getByRole('button', { name: ' Sign' }).click();
+    await page.getByRole('button', { name: 'Sign Here' }).first().click();
+    await page.getByRole('button', { name: 'Sign Here' }).nth(1).click();
+    await page.getByRole('button', { name: 'Sign Here' }).nth(2).click();
+    await page.getByRole('button', { name: 'Sign Here' }).nth(3).click();
+    await page.getByRole('button', { name: 'Sign Here' }).nth(4).click();
+    await page.getByRole('button', { name: ' Sign' }).click();
     await page.getByRole('button', { name: 'Complete Onboarding' }).click();
     //await page.goto('https://newpwa.manduu.app/app/client/dashboard');
 
@@ -422,25 +398,3 @@ async (page:any) => {
        
        }
 
-
-       test('Delete test user by email and other details with full name validation', async ({ page }) => {
-        console.log('Starting test: Deleting user by email and other details with full name validation');
-        await deleteStaffMember(page, fName, lName, email, PhoneNumber, selectStu, expectedWarningText);
-        console.log(`Test completed successfully: The User with the ${email} and other details with full name validation`);
-    });
-
-      //  async function handleUsernameTaken(page) {
-      //   try {
-          
-      
-          
-      
-      //       console.log('Deleting the existed staff....');
-      
-      //       // Delete the existing staff member
-      //       await deleteStaffMember(page, email, firstName, lastName, expectedWarningText);
-      
-            
-        
-      //   }
-      // }
