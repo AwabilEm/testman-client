@@ -112,12 +112,12 @@ export async function deleteStaffMember(
 // Test data
 const firstName = 'test';
 const lastName = 'automate';
-const email = 'awabil.test1@gmail.com';
+const email = 'awabil.new.card@gmail.com';
 const phoneNumber = '8000000001';
-const studioName = 'Downtown Franklin';
+const studioName = 'Houston';
 const expectedWarningText = 'will be deleted';
 
-// Main test
+//Main test
 // test('Delete test user by email and other details with full name validation', async ({ page }) => {
 //     console.log('Starting test: Delete user by email and other details with full name validation');
 //     await deleteStaffMember(page, firstName, lastName, email, phoneNumber, studioName, expectedWarningText);

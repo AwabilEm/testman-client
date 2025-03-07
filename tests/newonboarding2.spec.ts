@@ -2,16 +2,20 @@ import { test, expect } from '@playwright/test';
 //import { currentsReporter } from '@currents/playwright';
 import { convertDate } from '../util/dateUtils.ts'
 import { expectedStudios } from '../util/studios.ts';
+import { deleteStaffMember } from '../util/deletenew.ts';
+import { checkHomeStudio } from '../util/homeStudioIsOnboarded.ts';
 
 
-const email = 'test.awabil4@gmail.com';
-const PhoneNumber = '810-000-0001';
+const email = 'awabil.new.card@gmail.com';
+const PhoneNumber = '810-200-0002';
 
 const password = 'TestUser@1'
 const fName = 'test';
 const lName ='automate'
 const selectStu = 'Houston';
-const SelectedDate ='12/20/2024'
+// const selectStu = 'Memphis/Collierville';
+const SelectedDate ='05/23/2025'
+
 let selectedTime: string | null = null;
 
 // Ensure SelectedDate is defined
@@ -22,7 +26,8 @@ console.log('Selected date', CalendarSelectedDate); // Output: "September 17, 20
 
 
 
-
+//Delete user warning message
+const expectedWarningText = 'will be deleted';
 
 
 
@@ -116,12 +121,51 @@ test('Executed first appointment', async ({ page }) => {
   
   
 
-test('LoginToCompleteOnboard', async ({ page }) => {   
-  await login(page);
-  await addCard(page)
-  await signContract(page)
-     });
+// test('LoginToCompleteOnboard', async ({ page }) => {   
+//   await login(page);
+//   await addCard(page)
+//   await signContract(page)
 
+//   // await page.getByText('Home Studio: Houston').click();
+//   // await page.getByRole('link', { name: 'Subscription' }).click();
+//   // await expect(page.locator('man-datatable')).toContainText('Plan Session Start Date End Date Status rich_template 2/month 02/18/2025 02/18/2027 Active Rows per page:101 - 1 of 1 1');
+//   // await page.goto('https://newpwa.manduu.app/app/client/dashboard');
+//   //    
+//   });
+// test('Confirming the home studio', async ({ page }) => {   
+//   await login(page);
+//   await addCard(page)
+//   await signContract(page)
+//      });
+
+     test('VerifyStudioAndContractAfterOnboardingOn the client site', async ({ page }) => {
+      // Verify the selected studio after onboarding
+      await login(page);
+
+      const displayedStudio = await page.locator('text=Home Studio:').textContent();
+      expect(displayedStudio).toContain(selectStu);
+    
+      // Navigate to Subscription page
+      await page.getByRole('link', { name: 'Subscription' }).click();
+    
+     
+      // Go to dashboard after verification
+      await page.goto('https://newpwa.manduu.app/app/client/dashboard');
+    });
+    test('Manage user by email and other details with full name validation', async ({ page }) => {
+        
+      console.log('Starting test: Manage user by email and other details with full name validation');
+      await checkHomeStudio(page, fName, lName, email, PhoneNumber, selectStu);
+      console.log(`Test completed successfully: Manage the new  client; ${email} and other details with full name validation`);
+
+  });
+        test('Delete test user by email and other details with full name validation', async ({ page }) => {
+        
+        console.log('Starting test: Delete user by email and other details with full name validation');
+        await deleteStaffMember(page, fName, lName, email, PhoneNumber, selectStu, expectedWarningText);
+        console.log(`Test completed successfully: Delete the new created client; ${email} and other details with full name validation`);
+    });
+    
  
   async function fillPersonalInformation(page: any) {
   await page.locator('man-input').filter({ hasText: 'First Name *' }).getByRole('textbox').fill(fName);
@@ -132,8 +176,28 @@ test('LoginToCompleteOnboard', async ({ page }) => {
   
 //   await page.timeout(2000);
 
-  await page.fill('input[name="dateOfBirth"]', '12/20/2007');
-  await page.locator('input[type="text"]').fill(PhoneNumber);
+//await expect(page.getByPlaceholder('DD/MM/YYYY')).toBeVisible();a
+//await page.getByPlaceholder('DD/MM/YYYY' ,'20/12/2007');
+//await page.fill('input[name="dateOfBirth"]', '12/20/2007');
+  //await page.fill('input[name="dateOfBirth"]', '12/20/2007');
+await page.getByRole('button', { name: '' }).click();
+
+await page.getByRole('combobox').first().selectOption('9');
+await page.getByRole('combobox').nth(1).selectOption('3');
+await page.getByRole('combobox').nth(2).selectOption('2000');
+await page.getByRole('button', { name: 'Set Date' }).click();
+  //await page.locator('input[type="text"]').fill(PhoneNumber);
+await page.getByRole('textbox').nth(1).fill(PhoneNumber);
+
+await page.getByRole('textbox').nth(1).click({
+    button: 'right'
+  });
+await page.getByRole('textbox').nth(1).click({
+    button: 'right'
+  });
+  await page.getByRole('dialog').locator('div').nth(2).click();
+  await page.getByRole('button', { name: 'I Agree' }).click();
+
   await page.locator('div').filter({ hasText: /^Password$/ }).getByRole('textbox').fill(password);
   await page.locator('div').filter({ hasText: /^Confirm Password$/ }).getByRole('textbox').fill(password);
   
@@ -141,6 +205,8 @@ test('LoginToCompleteOnboard', async ({ page }) => {
   
 
   }
+
+
 
    //Select the studio.
 async function selectStudio(page: any) {
@@ -242,7 +308,7 @@ async function signMedicalConditions(page: any) {
 }
 
 async function howYouHearAboutUs(page: any) {
-  await page.getByRole('button', { name: 'Complete question' }).click()
+  //await page.getByRole('button', { name: 'Complete question' }).click()
   await page.locator('li').filter({ hasText: 'Print Magazine' }).getByRole('checkbox').check();
   await page.locator('li').filter({ hasText: 'Radio' }).getByRole('checkbox').check();
   await page.locator('li').filter({ hasText: 'TV' }).getByRole('checkbox').check();
@@ -267,7 +333,7 @@ async function howYouHearAboutUs(page: any) {
 }
 
 async function FirstAppointment(page: any){
-  await page.click('span:has-text("First Appointment")');
+  //await page.click('span:has-text("First Appointment")');
   await page.getByRole('button', { name: 'Continue' }).click();
 }
 async function  completeProfile(page: any){
@@ -276,7 +342,7 @@ await page.getByRole('combobox').first().selectOption('Female');
 await page.locator('div').filter({ hasText: /^CountrySelect CountryCanadaMexicoUnited States$/ }).getByRole('combobox').selectOption('United States');
 await page.getByRole('combobox').nth(2).selectOption('Alabama');
 await page.locator('man-input').filter({ hasText: 'City *' }).getByRole('textbox').fill('Accra');
-await page.locator('man-input').filter({ hasText: 'Zip Code *' }).getByRole('textbox').fill('111');
+await page.locator('man-input').filter({ hasText: 'Zip Code *' }).getByRole('textbox').fill('11451');
 await page.locator('man-input').filter({ hasText: 'Street *' }).getByRole('textbox').fill('accra');
 
 await page.getByRole('button', { name: 'Save' }).click();
@@ -287,19 +353,19 @@ await page.getByRole('button', { name: 'Save' }).click();
 async function  CompleteClientInfo(page: any){
   
  
-  await page.getByRole('button', { name: 'Complete Client Info' }).click();
+  //await page.getByRole('button', { name: 'Complete Client Info' }).click();
   await page.locator('div').filter({ hasText: /^Heigh\(Feet\)Selected Inch4567$/ }).getByRole('combobox').selectOption('5');
   await page.locator('div').filter({ hasText: /^Heigh\(Inches\)Selected Height01234567891011$/ }).getByRole('combobox').selectOption('7');
   await page.locator('man-input').filter({ hasText: 'First Name *' }).getByRole('textbox').fill('test');
   await page.locator('man-input').filter({ hasText: 'Last Name *' }).getByRole('textbox').fill('mand');
   await page.locator('div').filter({ hasText: /^Phone Number$/ }).getByRole('textbox').fill('(054) 433-3333');
-  await page.getByRole('button', { name: 'Save' }).click();
+  await page.getByRole('button', { name: 'Save', exact: true }).click();
 
 }
 
 async function SignWaiver(page:any) {
   
-await page.getByRole('button', { name: 'Sign', exact: true }).click();
+//await page.getByRole('button', { name: 'Sign', exact: true }).click();
 
  //signature-pad-canvas
 await page.click('.signature-pad-canvas');
@@ -334,7 +400,7 @@ async (page:any) => {
 }
   
   async function addCard(page:any) {
-    await page.getByRole('button', { name: 'Add Card' }).click();
+    //await page.getByRole('button', { name: 'Add Card' }).click();
     await page.getByTitle('Add Your Card').locator('input[type="text"]').fill('TESTER CARD');
     await page.locator('#cc-number').first().fill('4916186141125817');
     await page.locator('#cc-exp-date').fill('06 / 2026');
@@ -344,12 +410,16 @@ async (page:any) => {
   }
   
   async function signContract(page:any){
-        await page.getByRole('button', { name: 'Sign Contract' }).click();
+       // await page.getByRole('button', { name: 'Sign Contract' }).click();
     // await page.locator('div').filter({ hasText: /^Fit 8 Plan \(Manduu Oklahoma\)$/ await page.getByRole('button', { name: 'Sign Contract' }).click();}).click();
     //await page.locator('div').filter({ hasText: /^Unlimi- Fit Plan Best Value \*H \(Manduu Houston\)$/ }).click();
-    await page.locator('div').filter({ hasText: /^Test Kenn Konlan$/ }).first().click()
-   
-    //locator('div').filter({ hasText: /^Test Kenn Konlan$/ }).nth(1)
+    //await page.locator('div').filter({ hasText: /^Test Kenn Konlan$/ }).first().click()
+    // await page.locator('div').filter({ hasText: /^rich_template$/ }).first().click();
+    // await page.locator('div').filter({ hasText: /^rich_template$/ }).first().click();
+
+await page.locator('div').filter({ hasText: /^Fit 8 Plan$/ }).click();
+
+  
     // await page.getByRole('button', { name: 'Continue' }).click();
     await page.getByTitle('Sign Contract').locator('canvas').click({
       position: {
@@ -365,13 +435,9 @@ async (page:any) => {
     });
     
   
-    await page.getByRole('button', { name: 'Sign Here' }).first().click();
-    await page.getByRole('button', { name: 'Sign Here' }).nth(1).click();
-    await page.getByRole('button', { name: 'Sign Here' }).nth(2).click();
-    await page.getByRole('button', { name: 'Sign Here' }).nth(3).click();
-    await page.getByRole('button', { name: 'Sign Here' }).nth(4).click();
+    
     await page.getByRole('button', { name: ' Sign' }).click();
-    await page.getByRole('button', { name: 'Complete Onboarding' }).click();
+    //await page.getByRole('button', { name: 'Complete Onboarding' }).click();
     //await page.goto('https://newpwa.manduu.app/app/client/dashboard');
 
        }
@@ -392,9 +458,17 @@ async (page:any) => {
       }
       async function login(page:any){
         await page.goto('https://newpwa.manduu.app/account/login');
-      await page.getByPlaceholder('Username Or Email *').fill(email);
+      //await page.getByPlaceholder('Username Or Email *').fill(email);
+      await page.getByPlaceholder('Email or Phone Number *').fill(email);
+
+      
       await page.getByPlaceholder('Password *').fill(password);
         await page.getByRole('button', { name: 'Log In' }).click();
        
        }
+
+ 
+    
+   
+
 
