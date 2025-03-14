@@ -6,8 +6,8 @@ import { deleteStaffMember } from '../util/deletenew.ts';
 import { checkHomeStudio } from '../util/homeStudioIsOnboarded.ts';
 
 
-const email = 'awabil.new.card@gmail.com';
-const PhoneNumber = '810-200-0002';
+const email = 'awabil.new.count1@gmail.com';
+const PhoneNumber = '810-300-0002';
 
 const password = 'TestUser@1'
 const fName = 'test';

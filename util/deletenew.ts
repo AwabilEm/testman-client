@@ -22,29 +22,26 @@ export async function deleteStaffMember(
     console.log('Waiting for the table rows to load...');
     await page.waitForSelector('#main-page-table-container tbody.p-element.p-datatable-tbody', { state: 'visible' });
 
-    // Optionally, add a small timeout to allow table content to load
-    await page.waitForTimeout(5000); // Wait for 5 seconds
+    await page.waitForTimeout(5000); // Allow some time for content to load
 
     const table = await page.locator('#main-page-table-container tbody.p-element.p-datatable-tbody');
     const tableContent = await table.innerText();
 
     if (!tableContent || tableContent.includes("There's no data available")) {
-        console.error('Table is empty or not found.');
         throw new Error('Table is empty or not found.');
-    } else {
-        console.log('Table contents:', tableContent);  // Log the entire table contents for debugging
     }
+
+    console.log('Table contents:', tableContent);
 
     const rows = await page.$$('tbody.p-element.p-datatable-tbody tr');
     let rowToClick: any = null;
 
-    console.log('Iterating through table rows to find a match...');
-    
+    console.log('Searching for matching row...');
+
     for (const row of rows) {
         const rowText = await row.innerText();
-        console.log('Row text:', rowText);  // Log the text of each row for debugging
+        console.log('Row text:', rowText);
 
-        // Check if all the necessary information is present in the row
         if (
             rowText.includes(firstName) &&
             rowText.includes(lastName) &&
@@ -58,7 +55,6 @@ export async function deleteStaffMember(
     }
 
     if (!rowToClick) {
-        console.error('No matching row found for the specified details.');
         throw new Error('No matching row found.');
     }
 
@@ -67,59 +63,47 @@ export async function deleteStaffMember(
     console.log('Locating the action button in the row...');
     const actionButton = await rowToClick.$('button.bg-primary-green.text-white.px-2.py-1.rounded-md.btn-sm.min-w-max');
     if (!actionButton) {
-        console.error('Action button not found in the row.');
         throw new Error('Action button not found.');
     }
 
     console.log('Clicking the action button...');
     await actionButton.click();
 
-    console.log('Selecting the "Delete" option from the dropdown...');
+    console.log('Selecting the "Delete" option...');
     const deleteOption = await page.getByRole('menuitem', { name: 'Delete' });
-    if (!deleteOption) {
-        console.error('Delete option not found.');
-        throw new Error('Delete option not found.');
-    }
+    await deleteOption.waitFor({ state: 'visible' });
     await deleteOption.click();
 
-    console.log('Validating the warning message...');
-    const warningMessageElement = await page.$('div.modal-body p.text-xl');
-    if (!warningMessageElement) {
-        console.error('Warning message element not found.');
-        throw new Error('Warning message not found.');
-    }
+    console.log('Waiting for the warning message...');
+    const warningMessageElement = await page.waitForSelector('div.modal-body p.text-xl', { state: 'visible' });
 
     const warningMessageText = await warningMessageElement.innerText();
-    console.log('Warning message displayed:', warningMessageText);
+    console.log('Warning message:', warningMessageText);
 
-    // Ensure the warning message contains the full name (first and last name)
     if (!warningMessageText.includes(firstName) || !warningMessageText.includes(lastName)) {
-        console.error('Warning message does not contain the full name.');
         throw new Error('Warning message does not contain the full name.');
     }
 
-    console.log('Confirming the deletion...');
-    const confirmButton = await page.getByRole('button', { name: 'Yes' });
-    if (!confirmButton) {
-        console.error('Confirmation button not found.');
-        throw new Error('Confirmation button not found.');
+    console.log('Attempting to confirm deletion...');
+    
+    let confirmSuccess = false;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+            const confirmButton = await page.getByRole('button', { name: 'Yes' });
+            await confirmButton.waitFor({ state: 'visible' });
+            await confirmButton.click();
+            console.log('Clicked "Yes" button successfully.');
+            confirmSuccess = true;
+            break;
+        } catch (error) {
+            console.warn(`Attempt ${attempt}: Failed to click "Yes". Retrying...`);
+            await page.waitForTimeout(1000);
+        }
     }
-    await confirmButton.click();
+
+    if (!confirmSuccess) {
+        throw new Error('Failed to click "Yes" confirmation button after multiple attempts.');
+    }
 
     console.log('Staff member deletion confirmed.');
 }
-
-// Test data
-const firstName = 'test';
-const lastName = 'automate';
-const email = 'awabil.new.card@gmail.com';
-const phoneNumber = '8000000001';
-const studioName = 'Houston';
-const expectedWarningText = 'will be deleted';
-
-//Main test
-// test('Delete test user by email and other details with full name validation', async ({ page }) => {
-//     console.log('Starting test: Delete user by email and other details with full name validation');
-//     await deleteStaffMember(page, firstName, lastName, email, phoneNumber, studioName, expectedWarningText);
-//     console.log(`Test completed successfully: Delete the new created client; ${email} and other details with full name validation`);
-// });
