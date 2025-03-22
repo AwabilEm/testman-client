@@ -7,8 +7,8 @@ import { checkHomeStudio } from '../util/homeStudioIsOnboarded.ts';
 
 
 
-const email = 'awabil.test1@gmail.com';
-const PhoneNumber = '810-400-0002';
+const email = 'awabil.test3@gmail.com';
+const PhoneNumber = '810-400-0004';
 
 const password = 'TestUser@1'
 const fName = 'test';
@@ -16,6 +16,7 @@ const lName ='automate'
 const selectStu = 'Houston';
 // const selectStu = 'Memphis/Collierville';
 const SelectedDate ='05/23/2025'
+// const selectStu = 'Memphis/Collierville';
 
 let selectedTime: string | null = null;
 
@@ -471,5 +472,6 @@ await page.locator('div').filter({ hasText: /^Fit 8 Plan$/ }).click();
  
     
    
+       //await page.getByRole('link', { name: ' All Contracts' }).click();
 
 

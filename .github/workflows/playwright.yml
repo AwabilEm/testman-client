@@ -49,4 +49,4 @@ jobs:
              jq -r '.[].databaseId' | 
              xargs -I {} gh run delete {} --repo ${{ github.repository }}
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PAT_GITHUB }}
