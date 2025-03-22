@@ -8,7 +8,7 @@ on:
     branches: [ main, master ]
 
   schedule:
-    - cron: "*/30 * * * *"  # Runs every 30 minutes
+    - cron: "*/10 * * * *"  # Runs every 30 minutes
 
   workflow_dispatch:  # Allows manual trigger from GitHub UI
 
@@ -38,4 +38,15 @@ jobs:
       with:
         name: playwright-report
         path: playwright-report/
-        retention-days: 30
+        retention-days: 2  # ✅ Automatically delete artifacts after 2 days
+
+  # 👇 This ensures that workflow runs older than 2 days are automatically deleted
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete old workflow runs
+        run: gh run list --limit 1000 --json databaseId --repo ${{ github.repository }} | 
+             jq -r '.[].databaseId' | 
+             xargs -I {} gh run delete {} --repo ${{ github.repository }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
