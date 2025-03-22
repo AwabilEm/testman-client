@@ -56,4 +56,3 @@ jobs:
         run: |
           gh run list --repo ${{ github.repository }} --limit 1000 --json databaseId --jq '.[].databaseId' | \
           xargs -I {} yes | gh run delete {}
-test6
