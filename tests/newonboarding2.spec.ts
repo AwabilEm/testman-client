@@ -7,8 +7,8 @@ import { checkHomeStudio } from '../util/homeStudioIsOnboarded.ts';
 
 
 
-const email = 'awabil.test5@gmail.com';
-const PhoneNumber = '810-400-0007';
+const email = 'awabil.test6@gmail.com';
+const PhoneNumber = '810-400-0008';
 
 const password = 'TestUser@1'
 const fName = 'test';

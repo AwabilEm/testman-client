@@ -47,7 +47,7 @@ jobs:
 
       - name: Authenticate GitHub CLI
         env:
-          GH_TOKEN: ${{ secrets.PAT_GITHUB }}  # ✅ No need for manual login
+          GH_TOKEN: ${{ secrets.PAT_GITHUB }}
         run: gh auth status  # ✅ Checks if authentication is working
 
       - name: Delete old workflow runs
@@ -55,4 +55,5 @@ jobs:
           GH_TOKEN: ${{ secrets.PAT_GITHUB }}
         run: |
           gh run list --repo ${{ github.repository }} --limit 1000 --json databaseId --jq '.[].databaseId' | \
-          xargs -I {} gh run delete {} --repo ${{ github.repository }} --confirm
+          xargs -I {} yes | gh run delete {}
+test6
