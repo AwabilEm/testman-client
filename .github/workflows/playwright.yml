@@ -42,6 +42,9 @@ jobs:
     needs: test  # ✅ Ensures cleanup runs only after tests finish
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4  # ✅ Ensures the runner has a Git repo context
+
       - name: Install GitHub CLI
         run: sudo apt-get update && sudo apt-get install -y gh  # ✅ Ensure `gh` CLI is installed
 
@@ -54,5 +57,8 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.PAT_GITHUB }}
         run: |
-          gh run list --repo ${{ github.repository }} --limit 1000 --json databaseId --jq '.[].databaseId' | \
-          xargs -I {} yes | gh run delete {}
+          runs=$(gh run list --repo ${{ github.repository }} --limit 1000 --json databaseId --jq '.[].databaseId')
+          for run_id in $runs; do
+            echo "Deleting run ID: $run_id"
+            gh run delete "$run_id" --repo ${{ github.repository }} --confirm
+          done
