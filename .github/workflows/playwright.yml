@@ -60,5 +60,5 @@ jobs:
           runs=$(gh run list --repo ${{ github.repository }} --limit 1000 --json databaseId --jq '.[].databaseId')
           for run_id in $runs; do
             echo "Deleting run ID: $run_id"
-            gh run delete "$run_id" --repo ${{ github.repository }} --confirm
+            echo y | gh run delete "$run_id" --repo ${{ github.repository }}
           done
