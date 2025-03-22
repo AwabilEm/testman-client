@@ -3,13 +3,10 @@ name: Playwright Tests
 on:
   push:
     branches: [ main, master ]
-
   pull_request:
     branches: [ main, master ]
-
   schedule:
     - cron: "*/30 * * * *"  # Runs every 30 minutes
-
   workflow_dispatch:  # Allows manual trigger from GitHub UI
 
 jobs:
@@ -43,20 +40,19 @@ jobs:
   cleanup:
     runs-on: ubuntu-latest
     needs: test  # ✅ Ensures cleanup runs only after tests finish
+
     steps:
       - name: Install GitHub CLI
-        run: sudo apt-get install -y gh  # ✅ Ensure `gh` CLI is installed
+        run: sudo apt-get update && sudo apt-get install -y gh  # ✅ Ensure `gh` CLI is installed
 
       - name: Authenticate GitHub CLI
-        run: echo "${{ secrets.PAT_GITHUB }}" | gh auth login --with-token
         env:
-          GH_TOKEN: ${{ secrets.PAT_GITHUB }}
+          GH_TOKEN: ${{ secrets.PAT_GITHUB }}  # ✅ No need for manual login
+        run: gh auth status  # ✅ Checks if authentication is working
 
       - name: Delete old workflow runs
-        run: |
-          runs=$(gh run list --repo ${{ github.repository }} --limit 1000 --json databaseId --jq '.[].databaseId')
-          for run_id in $runs; do
-            gh run delete $run_id --repo ${{ github.repository }} --confirm
-          done
         env:
           GH_TOKEN: ${{ secrets.PAT_GITHUB }}
+        run: |
+          gh run list --repo ${{ github.repository }} --limit 1000 --json databaseId --jq '.[].databaseId' | \
+          xargs -I {} gh run delete {} --repo ${{ github.repository }} --confirm
