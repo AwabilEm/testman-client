@@ -8,7 +8,7 @@ on:
     branches: [ main, master ]
 
   schedule:
-    - cron: "*/10 * * * *"  # Runs every 30 minutes
+    - cron: "*/30 * * * *"  # Runs every 30 minutes
 
   workflow_dispatch:  # Allows manual trigger from GitHub UI
 
@@ -40,13 +40,23 @@ jobs:
         path: playwright-report/
         retention-days: 2  # ✅ Automatically delete artifacts after 2 days
 
-  # 👇 This ensures that workflow runs older than 2 days are automatically deleted
   cleanup:
     runs-on: ubuntu-latest
+    needs: test  # ✅ Ensures cleanup runs only after tests finish
     steps:
+      - name: Install GitHub CLI
+        run: sudo apt-get install -y gh  # ✅ Ensure `gh` CLI is installed
+
+      - name: Authenticate GitHub CLI
+        run: echo "${{ secrets.PAT_GITHUB }}" | gh auth login --with-token
+        env:
+          GH_TOKEN: ${{ secrets.PAT_GITHUB }}
+
       - name: Delete old workflow runs
-        run: gh run list --limit 1000 --json databaseId --repo ${{ github.repository }} | 
-             jq -r '.[].databaseId' | 
-             xargs -I {} gh run delete {} --repo ${{ github.repository }}
+        run: |
+          runs=$(gh run list --repo ${{ github.repository }} --limit 1000 --json databaseId --jq '.[].databaseId')
+          for run_id in $runs; do
+            gh run delete $run_id --repo ${{ github.repository }} --confirm
+          done
         env:
           GH_TOKEN: ${{ secrets.PAT_GITHUB }}
