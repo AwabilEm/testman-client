@@ -15,27 +15,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
 
-    - name: Run Playwright tests
-      run: npx playwright test
+      - name: Run Playwright tests
+        run: npx playwright test
 
-    - uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 2  # ✅ Automatically delete artifacts after 2 days
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 2  # ✅ Automatically delete artifacts after 2 days
 
   cleanup:
     runs-on: ubuntu-latest
@@ -43,22 +43,41 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4  # ✅ Ensures the runner has a Git repo context
+        uses: actions/checkout@v4  # ✅ Ensures the runner has Git context
 
       - name: Install GitHub CLI
-        run: sudo apt-get update && sudo apt-get install -y gh  # ✅ Ensure `gh` CLI is installed
+        run: |
+          sudo apt-get update && sudo apt-get install -y gh
+          gh --version  # ✅ Print `gh` version for debugging
 
       - name: Authenticate GitHub CLI
         env:
           GH_TOKEN: ${{ secrets.PAT_GITHUB }}
-        run: gh auth status  # ✅ Checks if authentication is working
+        run: |
+          echo "Authenticating GH CLI..."
+          gh auth status || exit 1  # ✅ Fail if authentication fails
+
+      - name: Fetch Workflow Runs
+        env:
+          GH_TOKEN: ${{ secrets.PAT_GITHUB }}
+        run: |
+          echo "Fetching workflow runs..."
+          gh run list --repo ${{ github.repository }} --limit 5  # ✅ Show 5 latest runs for debugging
 
       - name: Delete old workflow runs
         env:
           GH_TOKEN: ${{ secrets.PAT_GITHUB }}
         run: |
+          echo "Fetching workflow runs to delete..."
           runs=$(gh run list --repo ${{ github.repository }} --limit 1000 --json databaseId --jq '.[].databaseId')
+          echo "Runs to delete: $runs"
+
+          if [ -z "$runs" ]; then
+            echo "No runs found to delete."
+            exit 0
+          fi
+
           for run_id in $runs; do
             echo "Deleting run ID: $run_id"
-            echo y | gh run delete "$run_id" --repo ${{ github.repository }}
+            gh run delete "$run_id" --repo ${{ github.repository }} --confirm || echo "Failed to delete run $run_id"
           done
