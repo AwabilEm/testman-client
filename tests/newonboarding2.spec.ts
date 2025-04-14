@@ -7,15 +7,15 @@ import { checkHomeStudio } from '../util/homeStudioIsOnboarded.ts';
 
 
 
-const email = 'awabil.test7@gmail.com';
-const PhoneNumber = '810-400-0007';
+const email = 'test.awabil1@gmail.com';
+const PhoneNumber = '810-200-0001';
 
 const password = 'TestUser@1'
 const fName = 'test';
 const lName ='automate'
 const selectStu = 'Houston';
 // const selectStu = 'Memphis/Collierville';
-const SelectedDate ='05/23/2025'
+const SelectedDate ='06/23/2025'
 // const selectStu = 'Memphis/Collierville';
 
 let selectedTime: string | null = null;
@@ -123,22 +123,13 @@ test('Executed first appointment', async ({ page }) => {
   
   
 
-// test('LoginToCompleteOnboard', async ({ page }) => {   
-//   await login(page);
-//   await addCard(page)
-//   await signContract(page)
+test('LoginToCompleteOnboard', async ({ page }) => {   
+  await login(page);
+  await addCard(page)
+  await signContract(page)
 
-//   // await page.getByText('Home Studio: Houston').click();
-//   // await page.getByRole('link', { name: 'Subscription' }).click();
-//   // await expect(page.locator('man-datatable')).toContainText('Plan Session Start Date End Date Status rich_template 2/month 02/18/2025 02/18/2027 Active Rows per page:101 - 1 of 1 1');
-//   // await page.goto('https://newpwa.manduu.app/app/client/dashboard');
-//   //    
-//   });
-// test('Confirming the home studio', async ({ page }) => {   
-//   await login(page);
-//   await addCard(page)
-//   await signContract(page)
-//      });
+    
+  });
 
      test('VerifyStudioAndContractAfterOnboardingOn the client site', async ({ page }) => {
       // Verify the selected studio after onboarding
@@ -154,19 +145,19 @@ test('Executed first appointment', async ({ page }) => {
       // Go to dashboard after verification
       await page.goto('https://newpwa.manduu.app/app/client/dashboard');
     });
-    test('Manage user by email and other details with full name validation', async ({ page }) => {
+  //   test('Manage user by email and other details with full name validation', async ({ page }) => {
         
-      console.log('Starting test: Manage user by email and other details with full name validation');
-      await checkHomeStudio(page, fName, lName, email, PhoneNumber, selectStu);
-      console.log(`Test completed successfully: Manage the new  client; ${email} and other details with full name validation`);
+  //     console.log('Starting test: Manage user by email and other details with full name validation');
+  //     await checkHomeStudio(page, fName, lName, email, PhoneNumber, selectStu);
+  //     console.log(`Test completed successfully: Manage the new  client; ${email} and other details with full name validation`);
 
-  });
-        test('Delete test user by email and other details with full name validation', async ({ page }) => {
+  // });
+    //     test('Delete test user by email and other details with full name validation', async ({ page }) => {
         
-        console.log('Starting test: Delete user by email and other details with full name validation');
-        await deleteStaffMember(page, fName, lName, email, PhoneNumber, selectStu, expectedWarningText);
-        console.log(`Test completed successfully: Delete the new created client; ${email} and other details with full name validation`);
-    });
+    //     console.log('Starting test: Delete user by email and other details with full name validation');
+    //     await deleteStaffMember(page, fName, lName, email, PhoneNumber, selectStu, expectedWarningText);
+    //     console.log(`Test completed successfully: Delete the new created client; ${email} and other details with full name validation`);
+    // });
     
  
   async function fillPersonalInformation(page: any) {
@@ -176,12 +167,7 @@ test('Executed first appointment', async ({ page }) => {
   await page.getByRole('textbox').nth(3).fill(email);
   await page.getByRole('button', { name: 'Continue ' }).click();
   
-//   await page.timeout(2000);
 
-//await expect(page.getByPlaceholder('DD/MM/YYYY')).toBeVisible();a
-//await page.getByPlaceholder('DD/MM/YYYY' ,'20/12/2007');
-//await page.fill('input[name="dateOfBirth"]', '12/20/2007');
-  //await page.fill('input[name="dateOfBirth"]', '12/20/2007');
 await page.getByRole('button', { name: '' }).click();
 
 await page.getByRole('combobox').first().selectOption('9');
@@ -412,37 +398,25 @@ async (page:any) => {
   }
   
   async function signContract(page:any){
-       // await page.getByRole('button', { name: 'Sign Contract' }).click();
-    // await page.locator('div').filter({ hasText: /^Fit 8 Plan \(Manduu Oklahoma\)$/ await page.getByRole('button', { name: 'Sign Contract' }).click();}).click();
-    //await page.locator('div').filter({ hasText: /^Unlimi- Fit Plan Best Value \*H \(Manduu Houston\)$/ }).click();
-    //await page.locator('div').filter({ hasText: /^Test Kenn Konlan$/ }).first().click()
-    // await page.locator('div').filter({ hasText: /^rich_template$/ }).first().click();
-    // await page.locator('div').filter({ hasText: /^rich_template$/ }).first().click();
-
+   
 await page.locator('div').filter({ hasText: /^Fit 8 Plan$/ }).click();
 
   
-    // await page.getByRole('button', { name: 'Continue' }).click();
-    await page.getByTitle('Sign Contract').locator('canvas').click({
-      position: {
-        x: 109,
-        y: 56
-      }
-    });
-    await page.getByTitle('Sign Contract').locator('canvas').click({
-      position: {
-        x: 152,
-        y: 54
-      }
-    });
-    
-  
-    
-    await page.getByRole('button', { name: ' Sign' }).click();
-    //await page.getByRole('button', { name: 'Complete Onboarding' }).click();
-    //await page.goto('https://newpwa.manduu.app/app/client/dashboard');
+await page.getByTitle('Sign Contract').locator('canvas').click({
+  position: {
+    x: 106,
+    y: 42
+  }
+});
+await page.getByRole('button', { name: '     Sign' }).click();
+   
 
-       }
+
+
+       
+await page.getByRole('button', { name: 'Complete Onboarding' }).click();
+
+}
       
 
        export async function findAndClickEvent(page: any) {
