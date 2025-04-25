@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@playwright/test": "^1.48.1",
+    "@playwright/test": "^1.51.1",
     "@types/node": "^20.11.10",
     "allure-commandline": "^2.29.0",
     "allure-playwright": "^2.13.0",
@@ -19,6 +19,8 @@
     "monocart-reporter": "^2.6.1"
   },
   "dependencies": {
-    "dotenv": "^16.4.5"
+    "axios": "^1.8.4",
+    "dotenv": "^16.4.5",
+    "mailslurp-client": "^15.21.0"
   }
 }
