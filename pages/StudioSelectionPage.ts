@@ -8,6 +8,7 @@ export class StudioSelectionPage extends BasePage {
   }
   
   async selectStudio(studio: string) {
+    console.log('Booking first appointment...');
     await this.page.selectOption('select[formcontrolname="studioId"]', { label: studio });
   }
 }

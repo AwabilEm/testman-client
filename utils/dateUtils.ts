@@ -9,9 +9,9 @@ export function convertDate(date: string): string {
   return `${months[month - 1]} ${day}, ${year}`;
 }
 
-  export function generateUniqueIdentifiers(baseEmail: string, domain: string, index: number) {
+  export function generateUniqueIdentifiers(baseEmail: string, domain: string, index: number,phone:number) {
     return {
       email: `${baseEmail}${index + 1}${domain}`,
-      phoneNumber: `810800${String(index + 1).padStart(4, '0')}`,
+      phoneNumber: `${phone}${String(index + 1).padStart(4, '0')}`,
     };
   }

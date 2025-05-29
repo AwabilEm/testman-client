@@ -8,6 +8,8 @@ export class WaiverPage extends BasePage {
   }
   
   async signWaiver() {
+    console.log('Starting Medical waiver page...');
+
     await this.page.click('.signature-pad-canvas');
     
     await this.page.locator('input[name="table1q1"]').nth(1).check();
@@ -30,12 +32,21 @@ export class WaiverPage extends BasePage {
     await this.page.locator('input[name="table3q2"]').nth(1).check();
     await this.page.locator('input[name="table3q3"]').nth(1).check();
     await this.page.locator('input[name="table3q4"]').nth(1).check();
+   
     await this.page.getByRole('button', { name: 'Click To Sign' }).nth(1).click();
-    
     await this.page.locator('div').filter({ hasText: /^Draw SignatureClick To Sign$/ }).getByRole('button').click();
-    await this.page.getByRole('button', { name: '     Sign' }).click();
+    //await this.page.getByRole('button', { name: '     Sign' }).click();
+
+    await this.page.getByRole('button', { name: ' Sign' }).click();
+    console.log('Sign Medical waiver documents test completed...');
+
+
+
+
+
 
     await this.waitForTimeout(2000);
 
   }
+  
 }
