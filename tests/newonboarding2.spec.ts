@@ -15,7 +15,7 @@ const TEST_USER = {
 
 const TEST_CONFIG = {
   studio: 'Little Rock - Chenal',
-  appointmentDate: '08/27/2025',
+  appointmentDate: '08/30/2025',
   expectedWarningText: 'will be deleted'
 };
 
@@ -118,33 +118,67 @@ test.describe.serial('Client Onboarding and Management Flow', () => {
 
 // Registration and onboarding functions
 async function fillPersonalInformation(page) {
-  // Fill basic information
+  // === Fill First & Last Name ===
   await page.locator('man-input').filter({ hasText: 'First Name *' }).getByRole('textbox').fill(TEST_USER.firstName);
   await page.locator('man-input').filter({ hasText: 'Last Name *' }).getByRole('textbox').fill(TEST_USER.lastName);
+
+  // === Fill email ===
   await page.getByRole('textbox').nth(2).fill(TEST_USER.email);
-  await page.getByRole('textbox').nth(3).fill(TEST_USER.email);
+
+  const popupLocator = page.locator('#swal2-html-container');
+  const emailExists = await popupLocator.textContent()
+    .then(text => text?.includes('Email address already taken'))
+    .catch(() => false);
+
+  if (emailExists) {
+    await page.getByRole('button', { name: 'Ok' }).click();
+
+    // ✅ Update TEST_USER.email directly
+    TEST_USER.email = `test-${Date.now()}@example.com`;
+    await page.locator('input[type="email"]').fill(TEST_USER.email);
+    await page.getByRole('textbox').nth(2).click(); // trigger revalidation
+    await page.getByRole('textbox').nth(3).fill(TEST_USER.email);
+  }
+
   await page.getByRole('button', { name: 'Continue ' }).click();
 
-
-  // Set birthdate
+  // === Set birthdate ===
   await page.getByRole('button', { name: '' }).click();
   await page.getByRole('combobox').first().selectOption('9');
   await page.getByRole('combobox').nth(1).selectOption('3');
   await page.getByRole('combobox').nth(2).selectOption('2000');
   await page.getByRole('button', { name: 'Set Date' }).click();
 
-  // Set phone number and agree to terms
+  // === Fill phone number ===
   await page.getByRole('textbox').nth(1).fill(TEST_USER.phoneNumber);
+
+  let phoneExists = false;
+  try {
+    await page.waitForSelector('text=Phone Number already exist', { timeout: 3000 });
+    phoneExists = true;
+  } catch (e) {
+    phoneExists = false;
+  }
+
+  if (phoneExists) {
+    // ✅ Update TEST_USER.phoneNumber directly
+    TEST_USER.phoneNumber = '555' + Math.floor(1000000 + Math.random() * 8999999).toString();
+    await page.getByRole('textbox').nth(1).fill(TEST_USER.phoneNumber);
+  }
+
+  // === Agree to terms ===
   await page.getByRole('textbox').nth(1).click({ button: 'right' });
   await page.getByRole('textbox').nth(1).click({ button: 'right' });
   await page.getByRole('dialog').locator('div').nth(2).click();
   await page.getByRole('button', { name: 'I Agree' }).click();
 
-  // Set password
+  // === Set password ===
   await page.locator('div').filter({ hasText: /^Password$/ }).getByRole('textbox').fill(TEST_USER.password);
   await page.locator('div').filter({ hasText: /^Confirm Password$/ }).getByRole('textbox').fill(TEST_USER.password);
   await page.getByRole('button', { name: 'Continue' }).click();
 }
+
+
 async function signMedicalConditions(page) {
   await page.getByLabel('No').first().check();
   await page.click('input[type="radio"][name="pregnant"][value="No"]');
