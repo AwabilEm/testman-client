@@ -129,7 +129,6 @@ test.describe.serial('Client Onboarding and Management Flow', () => {
     await findAndClickAppointment(page, selectedTime, TEST_USER.firstName, TEST_USER.lastName);
 
     // Delete appointment 
-    //await updateAppointmentDetails(page);
     await DeleteFirstAppointment(page, selectedTime);
   });
   test('Delete test user', async ({ page }) => {
