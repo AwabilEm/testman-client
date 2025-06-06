@@ -5,6 +5,7 @@ import { checkHomeStudio } from '../util/homeStudioIsOnboarded.ts';
 import { format } from 'date-fns';
 
 // Test configuration constants
+//const randomPhone = `555${Math.floor(100 + Math.random() * 900)}${Math.floor(1000 + Math.random() * 9000)}`;
 const randomPhone = `555-${Math.floor(100 + Math.random() * 900)}-${Math.floor(1000 + Math.random() * 9000)}`;
 
 const TEST_USER = {
@@ -106,6 +107,8 @@ test.describe.serial('Client Onboarding and Management Flow', () => {
     await page.goto('https://newpwa.manduu.app/app/client/dashboard');
   });
  test('Delete the first appointment booked', async ({ page }) => {
+
+  
     // Navigate to admin dashboard
     await page.goto('https://admin.manduu.app/app/main/dashboard');
 
@@ -132,6 +135,8 @@ test.describe.serial('Client Onboarding and Management Flow', () => {
     await DeleteFirstAppointment(page, selectedTime);
   });
   test('Delete test user', async ({ page }) => {
+    console.log('Deleting test user:', TEST_USER.email);
+    console.log('Using phone number:', TEST_USER.phoneNumber);
     await deleteStaffMember(
       page,
       TEST_USER.firstName,
@@ -447,7 +452,11 @@ await expect(page.getByRole('textbox', { name: 'Scheduled Date' })).toHaveValue(
 expect(scheduledTime.replace(/^0/, '')).toBe(selectedTime);
 
   await expect(page.getByRole('textbox', { name: 'Client Email' })).toHaveValue(TEST_USER.email);
-  await expect(page.getByRole('textbox', { name: 'Client Phone Number' })).toHaveValue(TEST_USER.phoneNumber);
+  // await expect(page.getByRole('textbox', { name: 'Client Phone Number' })).toHaveValue(TEST_USER.phoneNumber);
+  await expect(
+  page.getByRole('textbox', { name: 'Client Phone Number' })
+).toHaveValue(TEST_USER.phoneNumber.replace(/-/g, ''));
+
   await expect(page.locator('#selectedClient')).toContainText('Test Automate');
   await page.getByRole('button', { name: 'Delete' }).click();
   // await expect(page.locator('#swal2-title')).toContainText('Delete Client Session for test automate : Aug 20, 2025 3:30 PM');
