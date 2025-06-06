@@ -2,20 +2,23 @@ import { test, expect } from '@playwright/test';
 import { convertDate } from '../util/dateUtils.ts';
 import { deleteStaffMember } from '../util/deletenew.ts';
 import { checkHomeStudio } from '../util/homeStudioIsOnboarded.ts';
-import { nextTick } from 'process';
+import { format } from 'date-fns';
 
 // Test configuration constants
+const randomPhone = `555-${Math.floor(100 + Math.random() * 900)}-${Math.floor(1000 + Math.random() * 9000)}`;
+
 const TEST_USER = {
-  email: 'test-may27@gmail.com',
-  phoneNumber: '010-001-1837',
+  email: `test-${Date.now()}@example.com`, // dynamic email
+  phoneNumber: randomPhone,
   password: 'TestUser@1',
   firstName: 'test',
   lastName: 'automate'
 };
 
+
 const TEST_CONFIG = {
   studio: 'Little Rock - Chenal',
-  appointmentDate: '08/30/2025',
+  appointmentDate: '08/20/2025',
   expectedWarningText: 'will be deleted'
 };
 
@@ -102,7 +105,33 @@ test.describe.serial('Client Onboarding and Management Flow', () => {
     // Return to dashboard
     await page.goto('https://newpwa.manduu.app/app/client/dashboard');
   });
+ test('Delete the first appointment booked', async ({ page }) => {
+    // Navigate to admin dashboard
+    await page.goto('https://admin.manduu.app/app/main/dashboard');
 
+    // Access session calendar
+    await page.getByRole('link', { name: 'Session Calendar' }).click();
+
+    // Set calendar filters
+    await page.fill('[formcontrolname="selectedDate"]', formattedAppointmentDate);
+    await selectStudioInAdmin(page, TEST_CONFIG.studio);
+
+    // Refresh and find appointment
+    await page.waitForTimeout(4000);
+    await page.getByRole('button', { name: 'Refresh' }).click();
+
+
+    await page.getByRole('searchbox', { name: 'Search...' }).fill(TEST_USER.firstName + ' ' + TEST_USER.lastName);
+    await page.getByRole('searchbox', { name: 'Search...' }).press('Enter');
+    await page.getByRole('searchbox', { name: 'Search...' }).click();
+
+    // Find and click on the appointment
+    await findAndClickAppointment(page, selectedTime, TEST_USER.firstName, TEST_USER.lastName);
+
+    // Delete appointment 
+    //await updateAppointmentDetails(page);
+    await DeleteFirstAppointment(page, selectedTime);
+  });
   test('Delete test user', async ({ page }) => {
     await deleteStaffMember(
       page,
@@ -123,22 +152,31 @@ async function fillPersonalInformation(page) {
   await page.locator('man-input').filter({ hasText: 'Last Name *' }).getByRole('textbox').fill(TEST_USER.lastName);
 
   // === Fill email ===
-  await page.getByRole('textbox').nth(2).fill(TEST_USER.email);
+  // await page.getByRole('textbox').nth(2).fill(TEST_USER.email);
 
-  const popupLocator = page.locator('#swal2-html-container');
-  const emailExists = await popupLocator.textContent()
-    .then(text => text?.includes('Email address already taken'))
-    .catch(() => false);
+  // const popupLocator = page.locator('#swal2-html-container');
+  // const emailExists = await popupLocator.textContent()
+  //   .then(text => text?.includes('Email address already taken'))
+  //   .catch(() => false);
 
-  if (emailExists) {
-    await page.getByRole('button', { name: 'Ok' }).click();
+  // if (emailExists) {
+  //   await page.getByRole('button', { name: 'Ok' }).click();
+
+  //   // ✅ Update TEST_USER.email directly
+  //   TEST_USER.email = `test-${Date.now()}@example.com`;
+  //   await page.locator('input[type="email"]').fill(TEST_USER.email);
+  //   await page.getByRole('textbox').nth(2).click(); // trigger revalidation
+  //   await page.getByRole('textbox').nth(3).fill(TEST_USER.email);
+  // }
+
+
 
     // ✅ Update TEST_USER.email directly
-    TEST_USER.email = `test-${Date.now()}@example.com`;
     await page.locator('input[type="email"]').fill(TEST_USER.email);
     await page.getByRole('textbox').nth(2).click(); // trigger revalidation
     await page.getByRole('textbox').nth(3).fill(TEST_USER.email);
-  }
+  
+
 
   await page.getByRole('button', { name: 'Continue ' }).click();
 
@@ -150,7 +188,6 @@ async function fillPersonalInformation(page) {
   await page.getByRole('button', { name: 'Set Date' }).click();
 
   // === Fill phone number ===
-  await page.getByRole('textbox').nth(1).fill(TEST_USER.phoneNumber);
 
   let phoneExists = false;
   try {
@@ -163,12 +200,13 @@ async function fillPersonalInformation(page) {
   if (phoneExists) {
     // ✅ Update TEST_USER.phoneNumber directly
     TEST_USER.phoneNumber = '555' + Math.floor(1000000 + Math.random() * 8999999).toString();
-    await page.getByRole('textbox').nth(1).fill(TEST_USER.phoneNumber);
+    //await page.getByRole('textbox').nth(1).fill(TEST_USER.phoneNumber);
   }
+  await page.getByRole('textbox').nth(1).fill(TEST_USER.phoneNumber);
 
   // === Agree to terms ===
-  await page.getByRole('textbox').nth(1).click({ button: 'right' });
-  await page.getByRole('textbox').nth(1).click({ button: 'right' });
+  // await page.getByRole('textbox').nth(1).click({ button: 'right' });
+  // await page.getByRole('textbox').nth(1).click({ button: 'right' });
   await page.getByRole('dialog').locator('div').nth(2).click();
   await page.getByRole('button', { name: 'I Agree' }).click();
 
@@ -397,6 +435,35 @@ async function updateAppointmentDetails(page) {
   await page.getByRole('button', { name: 'Save' }).click();
   await page.waitForTimeout(2000);
 }
+async function DeleteFirstAppointment(page, selectedTime) {
+const formattedPopupDate = format(new Date(TEST_CONFIG.appointmentDate), 'MMM dd, yyyy'); // 'Aug 20, 2025'
+
+  
+  //test-1749181558720@example.com
+//let formattedAppointmentDate = convertDate(TEST_CONFIG.appointmentDate);
+await expect(page.getByRole('textbox', { name: 'Scheduled Date' })).toHaveValue(formattedAppointmentDate);
+//await expect(page.getByRole('textbox', { name: 'Scheduled Date' })).toHaveValue(TEST_CONFIG.appointmentDate);
+  // await expect(page.getByRole('textbox', { name: 'Scheduled Time' })).toHaveValue(selectedTime);
+ const scheduledTime = await page.getByRole('textbox', { name: 'Scheduled Time' }).inputValue();
+expect(scheduledTime.replace(/^0/, '')).toBe(selectedTime);
+
+  await expect(page.getByRole('textbox', { name: 'Client Email' })).toHaveValue(TEST_USER.email);
+  await expect(page.getByRole('textbox', { name: 'Client Phone Number' })).toHaveValue(TEST_USER.phoneNumber);
+  await expect(page.locator('#selectedClient')).toContainText('Test Automate');
+  await page.getByRole('button', { name: 'Delete' }).click();
+  // await expect(page.locator('#swal2-title')).toContainText('Delete Client Session for test automate : Aug 20, 2025 3:30 PM');
+const expectedPopupText = `Delete Client Session for test automate : ${formattedPopupDate} ${selectedTime}`;
+await expect(page.locator('#swal2-title')).toContainText(expectedPopupText.trim());
+
+
+// const expectedPopupText = `Delete Client Session for test automate : ${TEST_CONFIG.appointmentDate} ${selectedTime}`;
+// await expect(page.locator('#swal2-title')).toContainText(expectedPopupText);
+
+  await page.getByRole('button', { name: 'Yes' }).click();
+  await page.waitForTimeout(2000);
+
+  
+}
 
 // Client-side functions
 async function login(page, email, password) {
@@ -485,4 +552,6 @@ async function verifyBookingConfirmation(page, studio, date, time) {
     console.error('Error verifying booking confirmation:', error);
   }
 }
+
+
 })

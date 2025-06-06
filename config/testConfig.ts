@@ -6,11 +6,11 @@ export const TEST_CONFIG = {
       firstName: 'test',
       lastName: 'automate',
       selectedDate: '08/26/2025',
-      baseEmail: 'test.may2025',
+      baseEmail: 'test.june2025',
       // baseEmail: 'test.awa5',
       // baseEmail: 'test.awa5',
       domain: '@gmail.com',
-      phone:'830100',
+      phone:'880100',
     }
   };
   
