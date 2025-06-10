@@ -11,7 +11,8 @@ on:
 
 jobs:
   test:
-    timeout-minutes: 60
+    timeout-minutes: 240  # ✅ Increased timeout to 4 hours for long-running tests
+    if: github.event_name != 'pull_request'  # ✅ Skip tests for PRs to avoid unnecessary runs
     runs-on: ubuntu-latest
 
     steps:

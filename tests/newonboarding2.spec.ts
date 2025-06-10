@@ -146,32 +146,17 @@ test.describe.serial('Client Onboarding and Management Flow', () => {
       TEST_CONFIG.studio,
       TEST_CONFIG.expectedWarningText
     );
+    await deletenewoldadmin(page) 
+
   });
-;
+
+
 
 // Registration and onboarding functions
 async function fillPersonalInformation(page) {
   // === Fill First & Last Name ===
   await page.locator('man-input').filter({ hasText: 'First Name *' }).getByRole('textbox').fill(TEST_USER.firstName);
   await page.locator('man-input').filter({ hasText: 'Last Name *' }).getByRole('textbox').fill(TEST_USER.lastName);
-
-  // === Fill email ===
-  // await page.getByRole('textbox').nth(2).fill(TEST_USER.email);
-
-  // const popupLocator = page.locator('#swal2-html-container');
-  // const emailExists = await popupLocator.textContent()
-  //   .then(text => text?.includes('Email address already taken'))
-  //   .catch(() => false);
-
-  // if (emailExists) {
-  //   await page.getByRole('button', { name: 'Ok' }).click();
-
-  //   // ✅ Update TEST_USER.email directly
-  //   TEST_USER.email = `test-${Date.now()}@example.com`;
-  //   await page.locator('input[type="email"]').fill(TEST_USER.email);
-  //   await page.getByRole('textbox').nth(2).click(); // trigger revalidation
-  //   await page.getByRole('textbox').nth(3).fill(TEST_USER.email);
-  // }
 
 
 
@@ -208,9 +193,7 @@ async function fillPersonalInformation(page) {
   }
   await page.getByRole('textbox').nth(1).fill(TEST_USER.phoneNumber);
 
-  // === Agree to terms ===
-  // await page.getByRole('textbox').nth(1).click({ button: 'right' });
-  // await page.getByRole('textbox').nth(1).click({ button: 'right' });
+
   await page.getByRole('dialog').locator('div').nth(2).click();
   await page.getByRole('button', { name: 'I Agree' }).click();
 
@@ -369,14 +352,6 @@ async function signWaiver(page) {
   for (const q of table3Questions) {
     await page.locator(`input[name="${q}"]`).nth(1).check();
   }
-  // await page.getByRole('button', { name: 'Click To Sign' }).nth(1).click();
-
-  // // Final signature
-  // await page.locator('div').filter({ hasText: /^Draw SignatureClick To Sign$/ }).getByRole('button').click();
-  // //await page.getByRole('button', { name: ' Sign' }).click();
-  // await this.page.getByRole('button', { name: '     Sign' }).click();
-  // await page.getByRole('button', { name: ' Sign' }).click();
-
 
 
   await page.getByRole('button', { name: 'Click To Sign' }).nth(1).click();
@@ -563,3 +538,26 @@ async function verifyBookingConfirmation(page, studio, date, time) {
 
 
 })
+
+async function deletenewoldadmin(page) {
+  const email = TEST_USER.email;
+  const fullName = `${TEST_USER.firstName} ${TEST_USER.lastName}`;
+
+  await page.goto('https://manduu.work/account/stafflogin');
+  await page.getByRole('textbox', { name: 'User name or email *' }).fill('admin@manduu.work');
+  await page.getByRole('textbox', { name: 'Password *' }).fill('Manduu.123!');
+  await page.getByRole('button', { name: 'Log in' }).click();
+
+  await page.getByRole('textbox', { name: 'Client Quick Search' }).fill(email);
+  await page.getByRole('button', { name: 'Search' }).click();
+
+  await page
+    .locator('tr')
+    .filter({ hasText: fullName })
+    .locator('button')
+    .first()
+    .click();
+
+  await page.getByRole('link', { name: 'Delete' }).click();
+  await page.getByRole('button', { name: 'Yes' }).click();
+}
