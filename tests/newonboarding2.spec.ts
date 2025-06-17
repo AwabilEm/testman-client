@@ -557,7 +557,21 @@ async function deletenewoldadmin(page) {
     .locator('button')
     .first()
     .click();
+await page.getByRole('button', { name: ' Actions ' }).click();
 
+await page.locator('ul.dropdown-menu a', { hasText: 'Delete' }).click();
+
+// await page.getByRole('link', { name: 'Delete' }).click();
+
+// await page.getByRole('button', { name: 'Cancel' }).click();
+// await page.getByRole('button', { name: ' Actions ' }).click();
+// await page.getByRole('link', { name: 'Delete' }).click({
+//     button: 'right'
+//   });
+// await page.getByRole('link', { name: 'Delete' }).click({
+//     button: 'right'
+//   });
+  
   await page.getByRole('link', { name: 'Delete' }).click();
   await page.getByRole('button', { name: 'Yes' }).click();
 }
