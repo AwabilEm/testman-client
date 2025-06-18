@@ -8,18 +8,38 @@ import { format } from 'date-fns';
 //const randomPhone = `555${Math.floor(100 + Math.random() * 900)}${Math.floor(1000 + Math.random() * 9000)}`;
 const randomPhone = `555-${Math.floor(100 + Math.random() * 900)}-${Math.floor(1000 + Math.random() * 9000)}`;
 
+// const TEST_USER = {
+//   email: `test-${Date.now()}@example.com`, // dynamic email
+//   phoneNumber: randomPhone,
+//   password: 'TestUser@1',
+//   firstName: 'test',
+//   lastName: 'testing'
+// };
+
+
+
+const today = new Date();
+
+// Example 1: Format as "17_June"
+// const options = { day: '2-digit', month: 'long' } as const;
+// const formattedDate1 = today.toLocaleDateString('en-US', options).replace(' ', '_');
+
+// Example 2: Format as "17-06"
+const formattedDate2 = `${today.getDate()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+
 const TEST_USER = {
-  email: `test-${Date.now()}@example.com`, // dynamic email
+  email: `test-${formattedDate2}@example.com`, // or formattedDate2
   phoneNumber: randomPhone,
   password: 'TestUser@1',
   firstName: 'test',
-  lastName: 'automate'
+  lastName: 'testing'
 };
+
 
 
 const TEST_CONFIG = {
   studio: 'Little Rock - Chenal',
-  appointmentDate: '08/20/2025',
+  appointmentDate: '08/21/2025',
   expectedWarningText: 'will be deleted'
 };
 
@@ -410,7 +430,7 @@ async function updateAppointmentDetails(page) {
 
   // Add memo and save
   await page.locator('app-text-area').filter({ hasText: 'Client Memo *' }).getByRole('textbox')
-    .fill('This whole process has been automated, to make things faster and to avoid mistakes, this session will be deleted after the testing: So as part of the onboarding admin is supposed to execute a user first appointment');
+    .fill('Testing the first appointment — this is just a check. The admin will walk through the initial appointment step to ensure everything functions as expected.Im executing this first appointment so the onboarding process can continue.');
   await page.getByRole('button', { name: 'Save' }).click();
   await page.waitForTimeout(2000);
 }
