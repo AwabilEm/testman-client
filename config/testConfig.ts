@@ -4,7 +4,7 @@ export const TEST_CONFIG = {
     credentials: {
       password: 'TestUser@1',
       firstName: 'test',
-      lastName: 'automate',
+      lastName: 'testing',
       selectedDate: '08/26/2025',
       baseEmail: 'test.june2025',
       // baseEmail: 'test.awa5',

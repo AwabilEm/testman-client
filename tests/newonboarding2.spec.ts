@@ -3,6 +3,7 @@ import { convertDate } from '../util/dateUtils.ts';
 import { deleteStaffMember } from '../util/deletenew.ts';
 import { checkHomeStudio } from '../util/homeStudioIsOnboarded.ts';
 import { format } from 'date-fns';
+import { expectedStudios } from '../util/studios.ts';
 
 // Test configuration constants
 //const randomPhone = `555${Math.floor(100 + Math.random() * 900)}${Math.floor(1000 + Math.random() * 9000)}`;
@@ -16,19 +17,18 @@ const randomPhone = `555-${Math.floor(100 + Math.random() * 900)}-${Math.floor(1
 //   lastName: 'testing'
 // };
 
-
-
 const today = new Date();
 
-// Example 1: Format as "17_June"
-// const options = { day: '2-digit', month: 'long' } as const;
-// const formattedDate1 = today.toLocaleDateString('en-US', options).replace(' ', '_');
+const month = today.getMonth() + 1; // 1-indexed
+const day = today.getDate();
+const hours = today.getHours();
+const minutes = today.getMinutes();
 
-// Example 2: Format as "17-06"
-const formattedDate2 = `${today.getDate()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+// Combine into desired format: e.g., 623501 for June 23, 5:01 AM
+const dateTimeStamp = `${month}${day}${String(hours).padStart(2, '0')}${String(minutes).padStart(2, '0')}`;
 
 const TEST_USER = {
-  email: `test-${formattedDate2}@example.com`, // or formattedDate2
+  email: `mytest${dateTimeStamp}@mid.com`, // e.g., mytest623051@example.com
   phoneNumber: randomPhone,
   password: 'TestUser@1',
   firstName: 'test',
@@ -37,12 +37,15 @@ const TEST_USER = {
 
 
 
+
 const TEST_CONFIG = {
-  studio: 'Little Rock - Chenal',
-  appointmentDate: '08/21/2025',
+  // studio: 'MU Lab',
+  // studio: 'Huntsville',
+  appointmentDate: '08/22/2025',
   expectedWarningText: 'will be deleted'
 };
 
+expectedStudios.forEach(studio => {
 // Global state
 let selectedTime: string | null = null;
 
@@ -58,7 +61,7 @@ test.describe.serial('Client Onboarding and Management Flow', () => {
     await signMedicalConditions(page);
 
     // Step 2: Select studio and schedule appointment
-    await selectStudio(page, TEST_CONFIG.studio);
+    await selectStudio(page, studio);
     await scheduleAppointment(page, TEST_CONFIG.appointmentDate);
 
     // Step 3: Complete profile setup
@@ -82,7 +85,7 @@ test.describe.serial('Client Onboarding and Management Flow', () => {
 
     // Set calendar filters
     await page.fill('[formcontrolname="selectedDate"]', formattedAppointmentDate);
-    await selectStudioInAdmin(page, TEST_CONFIG.studio);
+    await selectStudioInAdmin(page, studio);
 
     // Refresh and find appointment
     await page.waitForTimeout(4000);
@@ -118,7 +121,7 @@ test.describe.serial('Client Onboarding and Management Flow', () => {
 
     // Verify home studio
     const displayedStudio = await page.locator('text=Home Studio:').textContent();
-    expect(displayedStudio).toContain(TEST_CONFIG.studio);
+    expect(displayedStudio).toContain(studio);
 
     // Check subscription page
     await page.getByRole('link', { name: 'Subscription' }).click();
@@ -137,7 +140,7 @@ test.describe.serial('Client Onboarding and Management Flow', () => {
 
     // Set calendar filters
     await page.fill('[formcontrolname="selectedDate"]', formattedAppointmentDate);
-    await selectStudioInAdmin(page, TEST_CONFIG.studio);
+    await selectStudioInAdmin(page, studio);
 
     // Refresh and find appointment
     await page.waitForTimeout(4000);
@@ -163,12 +166,13 @@ test.describe.serial('Client Onboarding and Management Flow', () => {
       TEST_USER.lastName,
       TEST_USER.email,
       TEST_USER.phoneNumber,
-      TEST_CONFIG.studio,
+      studio,
       TEST_CONFIG.expectedWarningText
     );
     await deletenewoldadmin(page) 
 
   });
+})
 
 
 
@@ -245,7 +249,7 @@ async function scheduleAppointment(page, appointmentDate) {
   await selectRandomTimeSlot(page);
 
   // Verify booking details
-  await verifyBookingConfirmation(page, TEST_CONFIG.studio, appointmentDate, selectedTime);
+  await verifyBookingConfirmation(page,studio, appointmentDate, selectedTime);
 }
 
 async function selectRandomTimeSlot(page) {
@@ -420,6 +424,8 @@ async function updateAppointmentDetails(page) {
 
   // Set status to Executed
   await page.locator('app-dropdown[placeholder="Status"] .p-dropdown-trigger').click();
+    await page.waitForTimeout(1000);
+
   await page.getByLabel('Executed').click();
   await page.waitForTimeout(1000);
 
@@ -452,10 +458,10 @@ expect(scheduledTime.replace(/^0/, '')).toBe(selectedTime);
   page.getByRole('textbox', { name: 'Client Phone Number' })
 ).toHaveValue(TEST_USER.phoneNumber.replace(/-/g, ''));
 
-  await expect(page.locator('#selectedClient')).toContainText('Test Automate');
+  await expect(page.locator('#selectedClient')).toContainText('Test Testing');
   await page.getByRole('button', { name: 'Delete' }).click();
   // await expect(page.locator('#swal2-title')).toContainText('Delete Client Session for test automate : Aug 20, 2025 3:30 PM');
-const expectedPopupText = `Delete Client Session for test automate : ${formattedPopupDate} ${selectedTime}`;
+const expectedPopupText = `Delete Client Session for test testing : ${formattedPopupDate} ${selectedTime}`;
 await expect(page.locator('#swal2-title')).toContainText(expectedPopupText.trim());
 
 
@@ -569,6 +575,7 @@ async function deletenewoldadmin(page) {
   await page.getByRole('button', { name: 'Log in' }).click();
 
   await page.getByRole('textbox', { name: 'Client Quick Search' }).fill(email);
+  // await page.getByRole('textbox', { name: 'Client Quick Search' }).fill('mytest6271805@mid.com');
   await page.getByRole('button', { name: 'Search' }).click();
 
   await page
@@ -590,7 +597,7 @@ await page.locator('ul.dropdown-menu a', { hasText: 'Delete' }).click();
 //   });
 // await page.getByRole('link', { name: 'Delete' }).click({
 //     button: 'right'
-//   });
+//   }); 
   
   await page.getByRole('link', { name: 'Delete' }).click();
   await page.getByRole('button', { name: 'Yes' }).click();
